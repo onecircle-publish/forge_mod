@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "circlemod:block/test_block"
+    }
+  }
+}
