@@ -1,6 +1,7 @@
 package com.circle.circlemod.block;
 
 import com.circle.circlemod.CircleMod;
+import com.circle.circlemod.block.FreezeBlock.FreezeBlock;
 import com.circle.circlemod.items.ModCreativeModeTab;
 import com.circle.circlemod.items.ModItems;
 import net.minecraft.world.item.BlockItem;
@@ -23,6 +24,9 @@ public class ModBlocks {
     public static RegistryObject<Block> TEST_BLOCK = registryBlock("test_block",
             () -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(9f).requiresCorrectToolForDrops()),
             ModCreativeModeTab.TEST_TAB);
+
+    public static RegistryObject<FreezeBlock> FREEZE_BLOCK = registryBlock("freeze_block",
+            () -> new FreezeBlock(BlockBehaviour.Properties.of(Material.METAL).strength(9f).requiresCorrectToolForDrops()), ModCreativeModeTab.TEST_TAB);
 
     private static <T extends Block> RegistryObject<T> registryBlock(String name, Supplier<T> block,
                                                                      CreativeModeTab tab) {
