@@ -1,7 +1,7 @@
 package com.circle.circlemod.block.FreezeBlock;
 
+import com.circle.circlemod.paticle.ModParticles;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -14,7 +14,6 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.UUID;
 
 public class FreezeBlock extends Block {
     public FreezeBlock(Properties properties) {
@@ -25,12 +24,13 @@ public class FreezeBlock extends Block {
     public void setPlacedBy(Level level, BlockPos blockPos, BlockState blockState, @Nullable LivingEntity entity,
                             ItemStack itemStack) {
         super.setPlacedBy(level, blockPos, blockState, entity, itemStack);
-        if (entity == null) return;
+        freezeBlockPlacedParticles(level, blockPos);
 
+        if (entity == null) return;
         AABB aabb = new AABB(blockPos).inflate(5);
         List<Entity> entities = level.getEntities(null, aabb);
 
-        entity.sendMessage(Component.nullToEmpty("test"), UUID.randomUUID());
+
         for (Entity e : entities) {
             Vec3 position = e.position();
             var z = blockPos.getZ();
@@ -41,4 +41,11 @@ public class FreezeBlock extends Block {
             }
         }
     }
+
+    public void freezeBlockPlacedParticles(Level level, BlockPos pos) {
+        level.addParticle(ModParticles.FREEZE_PARTICLES.get(), pos.getX() + 1d, pos.getY(), pos.getZ() + 1d, 0.25d,
+                0.15d, 0.25d);
+    }
+
+
 }

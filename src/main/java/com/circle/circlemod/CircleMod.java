@@ -2,6 +2,7 @@ package com.circle.circlemod;
 
 import com.circle.circlemod.block.ModBlocks;
 import com.circle.circlemod.items.ModItems;
+import com.circle.circlemod.paticle.ModParticles;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -15,11 +16,12 @@ public class CircleMod {
     public static final Logger LOGGER = LogUtils.getLogger();
     public static final String MOD_ID = "circlemod";
 
-
     public CircleMod() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
         ModItems.registry(modEventBus);
         ModBlocks.registry(modEventBus);
+        ModParticles.registry(modEventBus);
 
         modEventBus.addListener(this::setup);
         MinecraftForge.EVENT_BUS.register(this);
