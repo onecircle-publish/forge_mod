@@ -1,4 +1,4 @@
-package com.circle.circlemod.items;
+package com.circle.circlemod.item;
 
 import com.circle.circlemod.CircleMod;
 import net.minecraft.world.item.Item;
