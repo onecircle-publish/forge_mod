@@ -19,7 +19,7 @@ public class CircleMod {
     public CircleMod() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        ModItems.registry(modEventBus);
+        ModItems.register(modEventBus);
         ModBlocks.registry(modEventBus);
         ModParticles.registry(modEventBus);
 
