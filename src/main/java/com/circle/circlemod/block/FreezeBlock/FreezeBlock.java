@@ -16,9 +16,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class FreezeBlock extends Block {
+    private int freezeSize = 5 + 1;
+
     public FreezeBlock(Properties properties) {
         super(properties);
     }
+
 
     @Override
     public void setPlacedBy(Level level, BlockPos blockPos, BlockState blockState, @Nullable LivingEntity entity,
@@ -36,16 +39,26 @@ public class FreezeBlock extends Block {
             var z = blockPos.getZ();
             var x = blockPos.getX();
             var y = blockPos.getY();
-            if (Math.abs(y - position.y) <= 2 && Math.abs(x - position.x) <= 2 && Math.abs(z - position.z) <= 2) {
+            if (((Math.abs(y - position.y) < freezeSize) &&
+                    (Math.sqrt(Math.pow(z - position.z, 2) + Math.pow(x - position.x, 2)) <= freezeSize))) {
                 e.hurt(DamageSource.STARVE, 5);
             }
         }
     }
 
     public void freezeBlockPlacedParticles(Level level, BlockPos pos) {
-        level.addParticle(ModParticles.FREEZE_PARTICLES.get(), pos.getX() + 1d, pos.getY(), pos.getZ() + 1d, 0.25d,
-                0.15d, 0.25d);
+        for (int j = 0; j < freezeSize; j++) {
+            for (int i = 0; i < 360; i++) {
+                if (i % freezeSize == 0) {
+                    level.addParticle(ModParticles.FREEZE_PARTICLES.get(),
+                            pos.getX() + Math.cos(Math.toRadians(i)) * j,
+                            pos.getY(),
+                            pos.getZ() + Math.sin(Math.toRadians(i)) * j,
+                            0.5d, 0d, 0.5d);
+
+                }
+            }
+        }
+
     }
-
-
 }
