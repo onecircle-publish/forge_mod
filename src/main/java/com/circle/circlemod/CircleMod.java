@@ -1,6 +1,7 @@
 package com.circle.circlemod;
 
 import com.circle.circlemod.block.ModBlocks;
+import com.circle.circlemod.effect.ModEffects;
 import com.circle.circlemod.item.ModItems;
 import com.circle.circlemod.paticle.ModParticles;
 import com.mojang.logging.LogUtils;
@@ -22,6 +23,7 @@ public class CircleMod {
         ModItems.register(modEventBus);
         ModBlocks.registry(modEventBus);
         ModParticles.registry(modEventBus);
+        ModEffects.register(modEventBus);
 
         modEventBus.addListener(this::setup);
         MinecraftForge.EVENT_BUS.register(this);

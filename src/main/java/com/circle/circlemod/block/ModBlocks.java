@@ -1,7 +1,7 @@
 package com.circle.circlemod.block;
 
 import com.circle.circlemod.CircleMod;
-import com.circle.circlemod.block.FreezeBlock.FreezeBlock;
+import com.circle.circlemod.block.freezeBlock.FreezeBlock;
 import com.circle.circlemod.item.ModCreativeModeTab;
 import com.circle.circlemod.item.ModItems;
 import net.minecraft.world.item.BlockItem;

@@ -1,8 +1,9 @@
-package com.circle.circlemod.block.FreezeBlock;
+package com.circle.circlemod.block.freezeBlock;
 
+import com.circle.circlemod.effect.ModEffects;
 import com.circle.circlemod.paticle.ModParticles;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -16,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class FreezeBlock extends Block {
-    private int freezeSize = 5 + 1;
+    private final int freezeSize = 5 + 1;
 
     public FreezeBlock(Properties properties) {
         super(properties);
@@ -41,7 +42,11 @@ public class FreezeBlock extends Block {
             var y = blockPos.getY();
             if (((Math.abs(y - position.y) < freezeSize) &&
                     (Math.sqrt(Math.pow(z - position.z, 2) + Math.pow(x - position.x, 2)) <= freezeSize))) {
-                e.hurt(DamageSource.STARVE, 5);
+
+                //设置冰冻效果
+                if (e instanceof LivingEntity) {
+                    ((LivingEntity) e).addEffect(new MobEffectInstance(ModEffects.freezeEffect.get(), 20 * 3));
+                }
             }
         }
     }
