@@ -25,8 +25,9 @@ public class ModBlocks {
             () -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(9f).requiresCorrectToolForDrops()),
             ModCreativeModeTab.TEST_TAB);
 
-    public static RegistryObject<FreezeBlock> FREEZE_BLOCK = registerBlock("freeze_block",
-            () -> new FreezeBlock(BlockBehaviour.Properties.of(Material.METAL).strength(9f).requiresCorrectToolForDrops()), ModCreativeModeTab.TEST_TAB);
+    public static RegistryObject<FreezeBlock> FREEZE_BLOCK = registerBlock("freeze_mushroom",
+            () -> new FreezeBlock(BlockBehaviour.Properties.of(Material.METAL).strength(9f).requiresCorrectToolForDrops().noOcclusion()), ModCreativeModeTab.TEST_TAB);
+
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block,
                                                                      CreativeModeTab tab) {
