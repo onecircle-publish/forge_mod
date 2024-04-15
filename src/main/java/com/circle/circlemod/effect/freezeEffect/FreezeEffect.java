@@ -5,12 +5,10 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.*;
 
-import java.util.Set;
 import java.util.UUID;
 
-
 public class FreezeEffect extends MobEffect {
-    private final UUID freezeUUID = UUID.randomUUID();
+    public static final UUID freezeUUID = UUID.fromString("D41C3A45-9CB2-392E-F75A-8ADD94C21DFF");
 
     public FreezeEffect(MobEffectCategory mobEffectCategory, int color) {
         super(mobEffectCategory, color);
@@ -42,8 +40,11 @@ public class FreezeEffect extends MobEffect {
         return true;
     }
 
+
     @Override
     public void addAttributeModifiers(LivingEntity livingEntity, AttributeMap attributeMap, int p_19480_) {
         super.addAttributeModifiers(livingEntity, attributeMap, p_19480_);
     }
+
+
 }
