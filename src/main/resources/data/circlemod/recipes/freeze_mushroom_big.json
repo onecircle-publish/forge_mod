@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "#$#",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:snowball"
+    },
+    "$": {
+      "item": "circlemod:freeze_mushroom"
+    }
+  },
+  "result": {
+    "item": "circlemod:freeze_mushroom_big"
+  }
+}

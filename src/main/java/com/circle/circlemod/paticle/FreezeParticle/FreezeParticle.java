@@ -8,11 +8,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class FreezeParticle extends TextureSheetParticle {
     protected FreezeParticle(ClientLevel p_108328_, double xCoord, double yCoord, double zCoord,
-                                  SpriteSet spriteSet, double xd, double yd, double zd) {
+                             SpriteSet spriteSet, double xd, double yd, double zd) {
         super(p_108328_, xCoord, yCoord, zCoord, xd, yd, zd);
         this.friction = 0.8f;
         this.quadSize *= 0.85f;
-        this.lifetime = 20;
         this.setSpriteFromAge(spriteSet);
 
         this.rCol = 1f;
@@ -24,6 +23,7 @@ public class FreezeParticle extends TextureSheetParticle {
     public void tick() {
         super.tick();
     }
+
 
     public void fadeOut() {
         this.alpha = (-(1 / (float) lifetime) * age + 1);

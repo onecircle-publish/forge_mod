@@ -1,16 +1,8 @@
 package com.circle.circlemod.event;
 
 import com.circle.circlemod.CircleMod;
-import com.circle.circlemod.effect.ModEffects;
-import com.circle.circlemod.paticle.FreezeParticle.FreezeParticle;
-import com.circle.circlemod.paticle.ModParticles;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;

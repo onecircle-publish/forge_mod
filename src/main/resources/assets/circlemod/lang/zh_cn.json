@@ -2,5 +2,6 @@
   "item.circlemod.test": "测试物品",
   "itemGroup.test_tab": "测试栏",
   "effect.circlemod.freeze": "冰冻",
-  "block.circlemod.freeze_mushroom": "冰川菇"
+  "block.circlemod.freeze_mushroom": "冰川菇",
+  "block.circlemod.freeze_mushroom_big": "大型冰川菇"
 }
