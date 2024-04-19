@@ -22,6 +22,7 @@ public class FreezeParticle extends TextureSheetParticle {
     @Override
     public void tick() {
         super.tick();
+        fadeOut();
     }
 
 
