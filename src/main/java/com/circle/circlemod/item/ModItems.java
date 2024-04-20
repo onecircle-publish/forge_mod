@@ -1,8 +1,6 @@
 package com.circle.circlemod.item;
 
 import com.circle.circlemod.CircleMod;
-import com.circle.circlemod.item.ironFlower.IronFlower;
-import com.circle.circlemod.item.ironFlower.IronFlowerRegister;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;

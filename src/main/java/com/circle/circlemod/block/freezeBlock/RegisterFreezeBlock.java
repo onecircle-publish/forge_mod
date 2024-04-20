@@ -13,7 +13,7 @@ public class RegisterFreezeBlock {
             () -> new FreezeBlock(), tab);
 
     public static RegistryObject<FreezeBlock> FREEZE_BLOCK_BIG = ModBlocks.registerBlock("freeze_mushroom_big",
-            () -> new FreezeMushroomBig(30), tab);
+            () -> new FreezeMushroomBig(30, 5), tab);
 
     public static void register() {
         CircleMod.LOGGER.debug("loaded freeze blocks");
