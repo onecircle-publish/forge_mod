@@ -12,11 +12,12 @@ public class FreezeParticle extends TextureSheetParticle {
     protected FreezeParticle(ClientLevel p_108328_, double xCoord, double yCoord, double zCoord,
                              SpriteSet spriteSet, double xd, double yd, double zd) {
         super(p_108328_, xCoord, yCoord, zCoord, xd, yd, zd);
-        this.gravity = 0.4f;
-        this.quadSize *= 0.85f;
+        this.gravity = 0.2f;
         this.setSpriteFromAge(spriteSet);
 
-        this.lifetime = 100;
+        float randomScale = (float) (0.5 + Math.random() * 0.5);
+        this.scale((float) (0.4 * randomScale));
+        this.lifetime = (int) (100 * (randomScale));
         this.rCol = 1f;
         this.gCol = 1f;
         this.bCol = 1f;
@@ -34,6 +35,7 @@ public class FreezeParticle extends TextureSheetParticle {
             if (startFadeTime == 0) {
                 startFadeTime = this.age;
             }
+
             this.alpha =
                     (-((1 / (float) startFadeTime) * (float) (age - (float) lifetime * 0.5)) + 1);
 
