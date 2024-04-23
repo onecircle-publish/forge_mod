@@ -16,29 +16,23 @@ import net.minecraftforge.registries.RegistryObject;
 
 @Mod.EventBusSubscriber(modid = CircleMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModParticles {
-    public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES =
-            DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, CircleMod.MOD_ID);
+    public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, CircleMod.MOD_ID);
 
     @SubscribeEvent
     public static void registerParticle(ParticleFactoryRegisterEvent event) {
-        Minecraft.getInstance().particleEngine.register(ModParticles.FREEZE_PARTICLE.get(),
-                FreezeParticle.Provider::new);
-        Minecraft.getInstance().particleEngine.register(ModParticles.CHARM_PARTICLE.get(),
-                CharmParticle.Provider::new);
+        Minecraft.getInstance().particleEngine.register(ModParticles.FREEZE_PARTICLE.get(), FreezeParticle.Provider::new);
+        Minecraft.getInstance().particleEngine.register(ModParticles.CHARM_PARTICLE.get(), CharmParticle.Provider::new);
     }
 
     /**
      * 冰冻粒子（雪花）
      */
-    public static final RegistryObject<SimpleParticleType> FREEZE_PARTICLE =
-            PARTICLE_TYPES.register("freeze_particle", () -> new SimpleParticleType(true));
+    public static final RegistryObject<SimpleParticleType> FREEZE_PARTICLE = PARTICLE_TYPES.register("freeze_particle", () -> new SimpleParticleType(true));
 
     /**
      * 魅惑粒子（爱心）
      */
-    public static final RegistryObject<SimpleParticleType> CHARM_PARTICLE =
-            PARTICLE_TYPES.register("charm_particle", () -> new SimpleParticleType(true));
-
+    public static final RegistryObject<SimpleParticleType> CHARM_PARTICLE = PARTICLE_TYPES.register("charm_particle", () -> new SimpleParticleType(true));
 
     public static void register(IEventBus eventBus) {
         PARTICLE_TYPES.register(eventBus);

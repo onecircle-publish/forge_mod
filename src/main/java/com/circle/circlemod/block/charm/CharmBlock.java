@@ -27,16 +27,10 @@ public class CharmBlock extends Block {
         super(pProperties);
     }
 
-
     @Override
-    public void setPlacedBy(Level pLevel, BlockPos pPos, BlockState pState, @Nullable LivingEntity pPlacer,
-                            ItemStack pStack) {
+    public void setPlacedBy(Level pLevel, BlockPos pPos, BlockState pState, @Nullable LivingEntity pPlacer, ItemStack pStack) {
         super.setPlacedBy(pLevel, pPos, pState, pPlacer, pStack);
-
-        List<LivingEntity> nearbyEntities = pLevel.getNearbyEntities(LivingEntity.class,
-                TargetingConditions.DEFAULT,
-                pPlacer,
-                new AABB(pPos).inflate(5));
+        List<LivingEntity> nearbyEntities = pLevel.getNearbyEntities(LivingEntity.class, TargetingConditions.DEFAULT, pPlacer, new AABB(pPos).inflate(5));
         for (LivingEntity nearbyEntity : nearbyEntities) {
             if (nearbyEntity instanceof Zombie) {
                 nearbyEntity.addEffect(new MobEffectInstance(ModEffects.CHARM_EFFECT.get(), 60));

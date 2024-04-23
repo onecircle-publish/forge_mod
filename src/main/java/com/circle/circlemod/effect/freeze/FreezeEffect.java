@@ -1,4 +1,4 @@
-package com.circle.circlemod.effect.freezeEffect;
+package com.circle.circlemod.effect.freeze;
 
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -14,17 +14,13 @@ public class FreezeEffect extends MobEffect {
         super(mobEffectCategory, color);
     }
 
-
     @Override
     public void applyEffectTick(LivingEntity livingEntity, int amplifier) {
         AttributeInstance attribute = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
-
         AttributeModifier modifier = attribute.getModifier(freezeUUID);
         if (modifier == null) {
-            attribute.addPermanentModifier(new AttributeModifier(freezeUUID, "freeze", -1,
-                    AttributeModifier.Operation.MULTIPLY_TOTAL));
+            attribute.addPermanentModifier(new AttributeModifier(freezeUUID, "freeze", -1, AttributeModifier.Operation.MULTIPLY_TOTAL));
         }
-
         super.applyEffectTick(livingEntity, amplifier);
     }
 
@@ -40,11 +36,8 @@ public class FreezeEffect extends MobEffect {
         return true;
     }
 
-
     @Override
     public void addAttributeModifiers(LivingEntity livingEntity, AttributeMap attributeMap, int p_19480_) {
         super.addAttributeModifiers(livingEntity, attributeMap, p_19480_);
     }
-
-
 }

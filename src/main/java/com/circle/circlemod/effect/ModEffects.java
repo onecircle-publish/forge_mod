@@ -13,17 +13,17 @@ import net.minecraftforge.registries.RegistryObject;
 import java.awt.*;
 
 public class ModEffects {
+    public static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, CircleMod.MOD_ID);
 
-    public static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS,
-            CircleMod.MOD_ID);
+    /**
+     * 冰冻效果
+     */
+    public static final RegistryObject<FreezeEffect> FREEZE_EFFECT = EFFECTS.register("freeze", () -> new FreezeEffect(MobEffectCategory.HARMFUL, 3124687));
 
-    // 冰冻效果
-    public static final RegistryObject<FreezeEffect> FREEZE_EFFECT = EFFECTS.register("freeze",
-            () -> new FreezeEffect(MobEffectCategory.HARMFUL, 3124687));
-
-    public static final RegistryObject<CharmEffect> CHARM_EFFECT = EFFECTS.register("charm",
-            () -> new CharmEffect(MobEffectCategory.HARMFUL, Color.pink.getRGB()));
-
+    /**
+     * 魅惑效果
+     */
+    public static final RegistryObject<CharmEffect> CHARM_EFFECT = EFFECTS.register("charm", () -> new CharmEffect(MobEffectCategory.HARMFUL, Color.pink.getRGB()));
 
     public static void register(IEventBus iEventBus) {
         EFFECTS.register(iEventBus);

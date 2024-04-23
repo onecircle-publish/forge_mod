@@ -13,7 +13,9 @@ import net.minecraft.world.phys.Vec3;
 
 public class CharmEffect extends MobEffect {
     private TargetGoal attachSameTypeGoal;
+
     private LivingEntity livingEntity;
+
     private int currentDuration = 0;
 
     public CharmEffect(MobEffectCategory pCategory, int pColor) {
@@ -35,7 +37,6 @@ public class CharmEffect extends MobEffect {
         return true;
     }
 
-
     /**
      * 作用于Zombie
      *
@@ -48,30 +49,21 @@ public class CharmEffect extends MobEffect {
             ((Zombie) pLivingEntity).targetSelector.removeGoal(this.attachSameTypeGoal);
             return;
         }
-
         if (livingEntity == null) {
             this.livingEntity = pLivingEntity;
         }
-
         if (attachSameTypeGoal == null) {
             //避免重复添加
-            this.attachSameTypeGoal = new ZombieAttachSameTypeGoal<Zombie>((Zombie) pLivingEntity, Zombie.class,
-                    false);
+            this.attachSameTypeGoal = new ZombieAttachSameTypeGoal<Zombie>((Zombie) pLivingEntity, Zombie.class, false);
         }
-
         ((Zombie) pLivingEntity).targetSelector.removeGoal(this.attachSameTypeGoal);
-        ((Zombie) pLivingEntity).targetSelector.addGoal(1,
-                new ZombieAttachSameTypeGoal((Zombie) pLivingEntity,
-                        Zombie.class, false));
-
-
+        ((Zombie) pLivingEntity).targetSelector.addGoal(1, new ZombieAttachSameTypeGoal((Zombie) pLivingEntity, Zombie.class, false));
         MobEffectInstance effect = pLivingEntity.getEffect(ModEffects.FREEZE_EFFECT.get());
         if ((effect != null) && effect.getDuration() != 0) {
             Vec3 pos = pLivingEntity.position();
             // 产生10个粒子，粒子移动会从脚部位移动到头部
             for (int i = 0; i < 10; i++) {
-                pLivingEntity.level.addParticle(ModParticles.CHARM_PARTICLE.get(), pos.x, pos.y, pos.z, 0, 10,
-                        0);
+                pLivingEntity.level.addParticle(ModParticles.CHARM_PARTICLE.get(), pos.x, pos.y, pos.z, 0, 10, 0);
             }
         }
     }

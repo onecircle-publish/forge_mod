@@ -1,4 +1,4 @@
-package com.circle.circlemod.block.freezeBlock;
+package com.circle.circlemod.block.freeze;
 
 public class FreezeMushroomBig extends FreezeBlock {
     public FreezeMushroomBig(int freezeSize, int height) {

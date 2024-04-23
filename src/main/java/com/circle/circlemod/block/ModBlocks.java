@@ -1,7 +1,7 @@
 package com.circle.circlemod.block;
 
 import com.circle.circlemod.CircleMod;
-import com.circle.circlemod.block.freezeBlock.RegisterFreezeBlock;
+import com.circle.circlemod.item.ModCreativeModeTab;
 import com.circle.circlemod.item.ModItems;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -15,24 +15,22 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.function.Supplier;
 
 public class ModBlocks {
-    public static final DeferredRegister<Block> BLOCKS =
-            DeferredRegister.create(ForgeRegistries.BLOCKS, CircleMod.MOD_ID);
+    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, CircleMod.MOD_ID);
 
+    public static final CreativeModeTab tab = ModCreativeModeTab.TEST_TAB;
 
-    public static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block,
-                                                                    CreativeModeTab tab) {
+    public static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block, CreativeModeTab tab) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(name, toReturn, tab);
         return toReturn;
     }
 
-    private static <T extends Block> void registerBlockItem(String name, RegistryObject<T> block,
-                                                            CreativeModeTab tab) {
+    private static <T extends Block> void registerBlockItem(String name, RegistryObject<T> block, CreativeModeTab tab) {
         ModItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(tab)));
     }
 
-    public static void registry(IEventBus eventBus) {
-        RegisterFreezeBlock.register();
+    public static void register(IEventBus eventBus) {
+        CircleBlocks.register();
         BLOCKS.register(eventBus);
     }
 }

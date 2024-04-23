@@ -13,9 +13,7 @@ import net.minecraftforge.fml.common.Mod;
 public class ModEventBusEvents {
     @SubscribeEvent
     public static void registerParticleFactories(final ParticleFactoryRegisterEvent event) {
-        Minecraft.getInstance().particleEngine.register(ModParticles.FREEZE_PARTICLE.get(),
-                FreezeParticle.Provider::new);
-        Minecraft.getInstance().particleEngine.register(ModParticles.CHARM_PARTICLE.get(),
-                CharmParticle.Provider::new);
+        Minecraft.getInstance().particleEngine.register(ModParticles.FREEZE_PARTICLE.get(), FreezeParticle.Provider::new);
+        Minecraft.getInstance().particleEngine.register(ModParticles.CHARM_PARTICLE.get(), CharmParticle.Provider::new);
     }
 }

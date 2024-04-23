@@ -14,9 +14,12 @@ import java.util.function.Predicate;
 
 public class ZombieAttachSameTypeGoal<T extends LivingEntity> extends TargetGoal {
     private Mob mob;
+
     private Class<T> targetType;
+
     @Nullable
     protected LivingEntity target;
+
     protected TargetingConditions targetConditions;
 
     public ZombieAttachSameTypeGoal(Mob pMob, Class<T> pTargetType, boolean pMustSee) {
@@ -27,21 +30,17 @@ public class ZombieAttachSameTypeGoal<T extends LivingEntity> extends TargetGoal
         this(pMob, pTargetType, pMustSee, pMustReach, (Predicate<LivingEntity>) null);
     }
 
-    public ZombieAttachSameTypeGoal(Mob pMob, Class<T> pTargetType, boolean pMustSee, boolean pMustReach,
-                                    @javax.annotation.Nullable Predicate<LivingEntity> pTargetPredicate) {
+    public ZombieAttachSameTypeGoal(Mob pMob, Class<T> pTargetType, boolean pMustSee, boolean pMustReach, @javax.annotation.Nullable Predicate<LivingEntity> pTargetPredicate) {
         super(pMob, pMustSee, pMustReach);
         this.targetType = pTargetType;
         this.mob = pMob;
         this.setFlags(EnumSet.of(Goal.Flag.TARGET));
-        this.targetConditions =
-                TargetingConditions.forCombat().range(this.getFollowDistance()).selector(pTargetPredicate);
-
+        this.targetConditions = TargetingConditions.forCombat().range(this.getFollowDistance()).selector(pTargetPredicate);
     }
 
     public AABB getTargetSearchArea(double pTargetDistance) {
         return this.mob.getBoundingBox().inflate(pTargetDistance, 4.0D, pTargetDistance);
     }
-
 
     public double getFollowDistance() {
         return this.mob.getAttributeValue(Attributes.FOLLOW_RANGE);
@@ -53,18 +52,15 @@ public class ZombieAttachSameTypeGoal<T extends LivingEntity> extends TargetGoal
     }
 
     public boolean findTarget() {
-        this.target = mob.level.getNearestEntity(this.mob.level.getEntitiesOfClass(this.targetType,
-                this.getTargetSearchArea(this.getFollowDistance()), (v) -> {
-                    return true;
-                }), this.targetConditions, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
-
+        this.target = mob.level.getNearestEntity(this.mob.level.getEntitiesOfClass(this.targetType, this.getTargetSearchArea(this.getFollowDistance()), (v) -> {
+            return true;
+        }), this.targetConditions, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
         if (this.target != null) {
             return true;
         } else {
             this.setFlags(EnumSet.of(Flag.LOOK));
             return false;
         }
-
     }
 
     @Override

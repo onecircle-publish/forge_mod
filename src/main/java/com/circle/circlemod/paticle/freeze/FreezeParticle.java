@@ -1,4 +1,4 @@
-package com.circle.circlemod.paticle.FreezeParticle;
+package com.circle.circlemod.paticle.freeze;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
@@ -9,12 +9,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class FreezeParticle extends TextureSheetParticle {
     private int startFadeTime;
 
-    protected FreezeParticle(ClientLevel p_108328_, double xCoord, double yCoord, double zCoord,
-                             SpriteSet spriteSet, double xd, double yd, double zd) {
+    protected FreezeParticle(ClientLevel p_108328_, double xCoord, double yCoord, double zCoord, SpriteSet spriteSet, double xd, double yd, double zd) {
         super(p_108328_, xCoord, yCoord, zCoord, xd, yd, zd);
         this.gravity = 0.2f;
         this.setSpriteFromAge(spriteSet);
-
         float randomScale = (float) (0.5 + Math.random() * 0.5);
         this.scale((float) (0.4 * randomScale));
         this.lifetime = (int) (100 * (randomScale));
@@ -29,16 +27,12 @@ public class FreezeParticle extends TextureSheetParticle {
         fadeOut();
     }
 
-
     public void fadeOut() {
         if (this.age >= lifetime - lifetime * 0.5) {
             if (startFadeTime == 0) {
                 startFadeTime = this.age;
             }
-
-            this.alpha =
-                    (-((1 / (float) startFadeTime) * (float) (age - (float) lifetime * 0.5)) + 1);
-
+            this.alpha = (-((1 / (float) startFadeTime) * (float) (age - (float) lifetime * 0.5)) + 1);
         }
     }
 
@@ -55,10 +49,8 @@ public class FreezeParticle extends TextureSheetParticle {
             this.spriteSet = spriteSet;
         }
 
-        public Particle createParticle(SimpleParticleType particleType, ClientLevel level, double x, double y, double z
-                , double dx, double dy, double dz) {
+        public Particle createParticle(SimpleParticleType particleType, ClientLevel level, double x, double y, double z, double dx, double dy, double dz) {
             return new FreezeParticle(level, x, y, z, this.spriteSet, dx, dy, dz);
         }
-
     }
 }
