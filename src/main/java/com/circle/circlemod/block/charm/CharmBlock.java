@@ -1,6 +1,5 @@
 package com.circle.circlemod.block.charm;
 
-import com.circle.circlemod.CircleMod;
 import com.circle.circlemod.effect.ModEffects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -8,12 +7,15 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -36,5 +38,11 @@ public class CharmBlock extends Block {
                 nearbyEntity.addEffect(new MobEffectInstance(ModEffects.CHARM_EFFECT.get(), 60));
             }
         }
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+//        new TurtleEggBlock();
+        return Block.box(3.0D, 0.0D, 3.0D, 12.0D, 7.0D, 12.0D);
     }
 }
