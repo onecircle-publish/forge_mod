@@ -42,7 +42,6 @@ public class CharmBlock extends Block {
 
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-//        new TurtleEggBlock();
-        return Block.box(3.0D, 0.0D, 3.0D, 12.0D, 7.0D, 12.0D);
+        return Block.box(4D, 0.0D, 4D, 12D, 7D, 12.0D);
     }
 }
