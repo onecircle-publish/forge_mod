@@ -1,6 +1,7 @@
 package com.circle.circlemod.block;
 
 import com.circle.circlemod.block.charm.CharmBlock;
+import com.circle.circlemod.block.doom.DoomMushroom;
 import com.circle.circlemod.block.freeze.FreezeBlock;
 import com.circle.circlemod.block.freeze.FreezeMushroomBig;
 import net.minecraftforge.registries.RegistryObject;
@@ -20,6 +21,11 @@ public class CircleBlocks {
      * 魅惑菇
      */
     public static RegistryObject<CharmBlock> CHARM_BLOCK = ModBlocks.registerBlock("charm_mushroom", () -> new CharmBlock(), ModBlocks.tab);
+    
+    /**
+     * 毁灭菇
+     */
+    public static RegistryObject<DoomMushroom> DOOM_MUSHROOM = ModBlocks.registerBlock("doom_mushroom", () -> new DoomMushroom(), ModBlocks.tab);
 
     public static void register() {
     }
