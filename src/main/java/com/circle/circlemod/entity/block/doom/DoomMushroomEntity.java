@@ -42,9 +42,6 @@ public class DoomMushroomEntity extends Entity {
 
     @Override
     public void tick() {
-        HashMap<String, String> map = new HashMap<>();
-        map.put("test", "123");
-        CircleModNetworking.INSTANCE.send(PacketDistributor.ALL.noArg(), new BaseSendPack(map));
         int fuse = this.getFuse();
         CircleMod.LOGGER.debug("DoomMushroomEntity fuse: {}", fuse);
         int i = fuse - 1;
