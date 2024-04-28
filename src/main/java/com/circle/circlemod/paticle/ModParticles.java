@@ -32,7 +32,7 @@ public class ModParticles {
     /**
      * 魅惑粒子（爱心）
      */
-    public static final RegistryObject<SimpleParticleType> CHARM_PARTICLE = PARTICLE_TYPES.register("charm_particle", () -> new SimpleParticleType(true));
+    public static final RegistryObject<SimpleParticleType> CHARM_PARTICLE = PARTICLE_TYPES.register("loving_particle", () -> new SimpleParticleType(true));
 
     public static void register(IEventBus eventBus) {
         PARTICLE_TYPES.register(eventBus);

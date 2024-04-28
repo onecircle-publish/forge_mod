@@ -2,6 +2,8 @@ package com.circle.circlemod.event;
 
 import com.circle.circlemod.CircleMod;
 import com.circle.circlemod.entity.ModEntities;
+import com.circle.circlemod.entity.block.charm.CharmMushroomEntityRenderer;
+import com.circle.circlemod.entity.block.charm.CharmMushroomModel;
 import com.circle.circlemod.entity.block.doom.DoomMushroomEntity;
 import com.circle.circlemod.entity.block.doom.DoomMushroomEntityRenderer;
 import com.circle.circlemod.entity.block.doom.DoomMushroomModel;
@@ -25,12 +27,14 @@ public class ModEventBusEvents {
     //注册模型渲染器
     @SubscribeEvent
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.<DoomMushroomEntity>registerEntityRenderer(ModEntities.DOOM_MUSHROOM_ENTITY.get(), DoomMushroomEntityRenderer::new);
+        event.registerEntityRenderer(ModEntities.DOOM_MUSHROOM_ENTITY.get(), DoomMushroomEntityRenderer::new);
+        event.registerEntityRenderer(ModEntities.CHARM_MUSHROOM_ENTITY.get(), CharmMushroomEntityRenderer::new);
     }
 
     //注册模型贴图
     @SubscribeEvent
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.<DoomMushroomEntity>registerLayerDefinition(DoomMushroomModel.LAYER_LOCATION, DoomMushroomModel::createBodyLayer);
+        event.<DoomMushroomEntity>registerLayerDefinition(CharmMushroomModel.LAYER_LOCATION, CharmMushroomModel::createBodyLayer);
     }
 }

@@ -2,8 +2,6 @@ package com.circle.circlemod.entity.block.doom;
 
 import com.circle.circlemod.CircleMod;
 import com.circle.circlemod.entity.ModEntities;
-import com.circle.circlemod.network.packs.BaseSendPack;
-import com.circle.circlemod.network.packs.CircleModNetworking;
 import com.circle.circlemod.paticle.ModParticles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -17,10 +15,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
 
 public class DoomMushroomEntity extends Entity {
     private static final EntityDataAccessor<Integer> FUSE = SynchedEntityData.defineId(DoomMushroomEntity.class, EntityDataSerializers.INT);
@@ -35,9 +31,6 @@ public class DoomMushroomEntity extends Entity {
     public DoomMushroomEntity(Level pLevel, BlockPos pos, @Nullable LivingEntity pOwner) {
         this(ModEntities.DOOM_MUSHROOM_ENTITY.get(), pLevel);
         this.setPos(pos.getX(), pos.getY(), pos.getZ());
-        this.xo = pos.getX();
-        this.yo = pos.getY();
-        this.zo = pos.getZ();
     }
 
     @Override
