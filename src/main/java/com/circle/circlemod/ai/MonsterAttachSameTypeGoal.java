@@ -6,31 +6,32 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.function.Predicate;
 
-public class ZombieAttachSameTypeGoal<T extends LivingEntity> extends TargetGoal {
+public class MonsterAttachSameTypeGoal<T extends Monster> extends TargetGoal {
     private Mob mob;
 
     private Class<T> targetType;
 
     @Nullable
-    protected LivingEntity target;
+    protected Monster target;
 
     protected TargetingConditions targetConditions;
 
-    public ZombieAttachSameTypeGoal(Mob pMob, Class<T> pTargetType, boolean pMustSee) {
+    public MonsterAttachSameTypeGoal(Mob pMob, Class<T> pTargetType, boolean pMustSee) {
         this(pMob, pTargetType, pMustSee, false, (Predicate<LivingEntity>) null);
     }
 
-    public ZombieAttachSameTypeGoal(Mob pMob, Class<T> pTargetType, boolean pMustSee, boolean pMustReach) {
+    public MonsterAttachSameTypeGoal(Mob pMob, Class<T> pTargetType, boolean pMustSee, boolean pMustReach) {
         this(pMob, pTargetType, pMustSee, pMustReach, (Predicate<LivingEntity>) null);
     }
 
-    public ZombieAttachSameTypeGoal(Mob pMob, Class<T> pTargetType, boolean pMustSee, boolean pMustReach, @javax.annotation.Nullable Predicate<LivingEntity> pTargetPredicate) {
+    public MonsterAttachSameTypeGoal(Mob pMob, Class<T> pTargetType, boolean pMustSee, boolean pMustReach, @javax.annotation.Nullable Predicate<LivingEntity> pTargetPredicate) {
         super(pMob, pMustSee, pMustReach);
         this.targetType = pTargetType;
         this.mob = pMob;

@@ -15,6 +15,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -24,11 +25,14 @@ import net.minecraftforge.network.NetworkHooks;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class CharmMushroomEntity extends Entity {
     private static final EntityDataAccessor<Integer> TICK = SynchedEntityData.defineId(DoomMushroomEntity.class, EntityDataSerializers.INT);
 
-    private final int charmDuration = 60;
+    private final int charmDuration = 100;//增加的效果持续时间
+
+    private final int mushroomLifetime = 120;//魅惑菇存在时间
 
     private LivingEntity onwer;
 
@@ -66,20 +70,25 @@ public class CharmMushroomEntity extends Entity {
      * @param pPos
      */
     public void doCharm(Level pLevel, LivingEntity pPlacer, BlockPos pPos) {
-        List<LivingEntity> nearbyEntities = pLevel.getNearbyEntities(LivingEntity.class, TargetingConditions.DEFAULT, pPlacer, new AABB(pPos).inflate(5));
-        for (LivingEntity nearbyEntity : nearbyEntities) {
-            if (nearbyEntity instanceof Zombie) {
-                nearbyEntity.addEffect(new MobEffectInstance(ModEffects.CHARM_EFFECT.get(), this.charmDuration));
+        List<Entity> entities = pLevel.getEntitiesOfClass(Entity.class, new AABB(pPos).inflate(10));
+        entities.forEach(entity -> {
+            if (entity instanceof DoomMushroomEntity) {
+                ((DoomMushroomEntity) entity).markExplodeNextTick();
             }
-        }
-        doParticles(nearbyEntities, pLevel, pPos);
+            if (entity instanceof LivingEntity) {
+                ((LivingEntity) entity).addEffect(new MobEffectInstance(ModEffects.CHARM_EFFECT.get(), this.charmDuration));
+            }
+        });
+        doParticles(entities, pLevel, pPos);
     }
 
-    public void doParticles(List<LivingEntity> entities, Level level, BlockPos pos) {
+    public void doParticles(List<Entity> entities, Level level, BlockPos pos) {
         ArrayList<Vec3> vec3s = new ArrayList<>();
         for (Entity entity : entities) {
-            Vec3 position = entity.getPosition(1);
-            vec3s.add(new Vec3(position.x - pos.getX(), position.y - pos.getY(), position.z - pos.getZ()));
+            if (entity instanceof LivingEntity) {
+                Vec3 position = entity.getPosition(1);
+                vec3s.add(new Vec3(position.x - pos.getX(), position.y - pos.getY(), position.z - pos.getZ()));
+            }
         }
         vec3s.forEach(vec3 -> {
             level.addParticle(ModParticles.CHARM_PARTICLE.get(), pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, vec3.x, vec3.y, vec3.z);
@@ -87,7 +96,7 @@ public class CharmMushroomEntity extends Entity {
     }
 
     protected void defineSynchedData() {
-        this.entityData.define(TICK, 80);
+        this.entityData.define(TICK, mushroomLifetime);
     }
 
     @Override
