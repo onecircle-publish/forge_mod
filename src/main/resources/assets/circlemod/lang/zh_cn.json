@@ -4,5 +4,8 @@
   "effect.circlemod.freeze": "冰冻",
   "block.circlemod.freeze_mushroom": "冰川菇",
   "block.circlemod.freeze_mushroom_big": "大型冰川菇",
-  "block.circlemod.charm_mushroom": "魅惑菇"
+  "entity.circlemod.charm_mushroom": "魅惑菇",
+  "entity.circlemod.doom_mushroom": "毁灭菇",
+  "item.circlemod.charm_mushroom": "魅惑菇",
+  "item.circlemod.doom_mushroom": "毁灭菇"
 }

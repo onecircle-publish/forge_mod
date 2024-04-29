@@ -4,11 +4,13 @@ import com.circle.circlemod.CircleMod;
 import com.circle.circlemod.entity.ModEntities;
 import com.circle.circlemod.paticle.ModParticles;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -19,9 +21,13 @@ import net.minecraftforge.network.NetworkHooks;
 import javax.annotation.Nullable;
 
 public class DoomMushroomEntity extends Entity {
+    private static final int EXPLODE_TIME = 100;
+
     private static final EntityDataAccessor<Integer> FUSE = SynchedEntityData.defineId(DoomMushroomEntity.class, EntityDataSerializers.INT);
 
     private static final EntityDataAccessor<Boolean> EXPLODED = SynchedEntityData.defineId(DoomMushroomEntity.class, EntityDataSerializers.BOOLEAN);
+
+    private static final EntityDataAccessor<Boolean> EXPLODE_NEXT_TICK = SynchedEntityData.defineId(DoomMushroomEntity.class, EntityDataSerializers.BOOLEAN);
 
     public DoomMushroomEntity(EntityType<?> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -35,51 +41,59 @@ public class DoomMushroomEntity extends Entity {
 
     @Override
     public void tick() {
+        if (getExplodedNextTick()) {
+            doDoom();
+            return;
+        }
         int fuse = this.getFuse();
         CircleMod.LOGGER.debug("DoomMushroomEntity fuse: {}", fuse);
         int i = fuse - 1;
         this.setFuse(i);
         if (i <= 0) {
-            // 服务端销毁后客户端就不会tick了，所以用exploded字段来保证 客户端执行完操作后再在服务端进行销毁
-            if (getExploded()) {
-                this.discard();
-                doServerExplode();
-            }
+            doDoom();
+        }
+    }
+
+    public void doDoom() {
+        if (!this.level.isClientSide) {
+            this.discard();
+            this.level.explode(this, this.getX(), this.getY(), this.getZ(), 20, false, Explosion.BlockInteraction.BREAK);
             doParticle();
         }
     }
 
-    public void doServerExplode() {
-        if (!this.level.isClientSide) {
-            this.level.explode(this, this.getX(), this.getY(), this.getZ(), 10, false, Explosion.BlockInteraction.BREAK);
+    public void doParticle() {
+        if (!level.isClientSide) {
+            ((ServerLevel) level).sendParticles(ParticleTypes.CAMPFIRE_COSY_SMOKE, this.getX(), this.getY(), this.getZ(), 3000, 10, 0, 10, 0.5);
         }
     }
 
-    public void doParticle() {
-        if (level.isClientSide) {
-            for (int i = -50; i < 50; i++) {
-                level.addParticle(ModParticles.FREEZE_PARTICLE.get(), this.getX() + i, this.getY(), this.getZ(), 0, 20, 0);
-            }
-        }
-        this.setExploded(true);
+    /**
+     * 标记在下一个tick开始触发爆炸
+     */
+    public void markExplodeNextTick() {
+        this.setExplodeNextTick(true);
     }
 
     @Override
     protected void defineSynchedData() {
-        this.entityData.define(FUSE, 40);
+        this.entityData.define(FUSE, EXPLODE_TIME);
         this.entityData.define(EXPLODED, false);
+        this.entityData.define(EXPLODE_NEXT_TICK, false);
     }
 
     @Override
     protected void readAdditionalSaveData(CompoundTag pCompound) {
         this.setFuse(pCompound.getShort("Fuse"));
         this.setExploded(pCompound.getBoolean("Exploded"));
+        this.setExploded(pCompound.getBoolean("ExplodedNextTick"));
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag pCompound) {
         pCompound.putShort("Fuse", (short) this.getFuse());
         pCompound.putBoolean("Exploded", this.getExploded());
+        pCompound.putBoolean("ExplodedNextTick", this.getExplodedNextTick());
     }
 
     @Override
@@ -104,5 +118,13 @@ public class DoomMushroomEntity extends Entity {
 
     public void setExploded(boolean exploded) {
         this.entityData.set(EXPLODED, exploded);
+    }
+
+    public boolean getExplodedNextTick() {
+        return this.entityData.get(EXPLODE_NEXT_TICK);
+    }
+
+    public void setExplodeNextTick(boolean exploded) {
+        this.entityData.set(EXPLODE_NEXT_TICK, exploded);
     }
 }

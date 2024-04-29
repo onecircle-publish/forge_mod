@@ -14,9 +14,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
-import net.minecraft.world.entity.monster.Skeleton;
-import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -25,7 +22,6 @@ import net.minecraftforge.network.NetworkHooks;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 
 public class CharmMushroomEntity extends Entity {
     private static final EntityDataAccessor<Integer> TICK = SynchedEntityData.defineId(DoomMushroomEntity.class, EntityDataSerializers.INT);
@@ -38,6 +34,9 @@ public class CharmMushroomEntity extends Entity {
 
     public CharmMushroomEntity(EntityType<?> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+        if (this.level.isEmptyBlock(this.blockPosition().below())) {
+            this.remove(RemovalReason.DISCARDED);
+        }
     }
 
     public CharmMushroomEntity(Level pLevel, BlockPos pos, @Nullable LivingEntity pOwner) {
@@ -48,7 +47,6 @@ public class CharmMushroomEntity extends Entity {
 
     @Override
     public void tick() {
-        super.tick();
         if (this.level.isEmptyBlock(this.blockPosition().below())) {
             this.remove(RemovalReason.DISCARDED);
         }
@@ -56,10 +54,11 @@ public class CharmMushroomEntity extends Entity {
         if (tick < 0) {
             this.remove(RemovalReason.KILLED);
         }
-        if (tick % 20 == 0) {
+        if (tick % 40 == 0) {
             doCharm(this.level, this.onwer, this.blockPosition());
         }
         setTick(tick - 1);
+        super.tick();
     }
 
     /**

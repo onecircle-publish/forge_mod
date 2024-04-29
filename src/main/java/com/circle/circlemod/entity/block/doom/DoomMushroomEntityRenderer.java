@@ -2,6 +2,7 @@ package com.circle.circlemod.entity.block.doom;
 
 import com.circle.circlemod.CircleMod;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -21,6 +22,7 @@ public class DoomMushroomEntityRenderer extends EntityRenderer<DoomMushroomEntit
     @Override
     public void render(DoomMushroomEntity pEntity, float pEntityYaw, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight) {
         super.render(pEntity, pEntityYaw, pPartialTick, pPoseStack, pBuffer, pPackedLight);
+        pPoseStack.mulPose(Vector3f.XN.rotationDegrees(-180));
         this.doomMushroomModel.renderToBuffer(pPoseStack, pBuffer.getBuffer(RenderType.entityCutout(getTextureLocation(pEntity))), pPackedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
     }
 

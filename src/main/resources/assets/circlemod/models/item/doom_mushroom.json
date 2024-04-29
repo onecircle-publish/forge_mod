@@ -1,3 +1,6 @@
 {
-  "parent": "circlemod:block/freeze_mushroom"
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "circlemod:item/doom_mushroom_item"
+  }
 }
