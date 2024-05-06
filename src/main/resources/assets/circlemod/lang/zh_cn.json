@@ -1,6 +1,7 @@
 {
-  "item.circlemod.test": "测试物品",
   "itemGroup.test_tab": "好玩的mod",
+  "item.circlemod.test": "测试物品",
+  "item.circlemod.kelp_sword": "海带剑",
   "effect.circlemod.freeze": "冰冻",
   "effect.circlemod.charm": "魅惑",
   "block.circlemod.freeze_mushroom": "冰川菇",
