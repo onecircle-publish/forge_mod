@@ -26,6 +26,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
+import javax.annotation.Nullable;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ import java.util.Optional;
  * @author yuanxin
  * @date 2024-05-07 15:12
  **/
-public class KelpSwordItem extends SwordItem implements KelpSwordItemInterface {
+public class KelpSwordItem extends SwordItem {
     public static final int MAX_ABILITY_COUNT = 2;
     public static final String ABILITI_NBT_KEY = "KelpSwordAbilities";
 
@@ -94,7 +95,7 @@ public class KelpSwordItem extends SwordItem implements KelpSwordItemInterface {
 
     @Override
     public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
-        useAbilities(stack, player, SwordAbilities.UseType.CLICK);
+        useAbilities(SwordAbilities.UseType.CLICK, stack, player, entity);
         return super.onLeftClickEntity(stack, player, entity);
     }
 
@@ -105,7 +106,7 @@ public class KelpSwordItem extends SwordItem implements KelpSwordItemInterface {
         //父类中逻辑，不可食用则不会触发startingUsingItem，这里手动调用。
         pPlayer.startUsingItem(pUsedHand);
         // 使用技能
-        useAbilities(item, pPlayer, SwordAbilities.UseType.USE);
+        useAbilities(SwordAbilities.UseType.CLICK, item, pPlayer, null);
         return super.use(pLevel, pPlayer, pUsedHand);
     }
 
@@ -171,7 +172,7 @@ public class KelpSwordItem extends SwordItem implements KelpSwordItemInterface {
      * @param stack
      * @param type
      */
-    public void useAbilities(ItemStack stack, Player player, SwordAbilities.UseType type) {
+    public void useAbilities(SwordAbilities.UseType type, ItemStack stack, Player player, @Nullable Entity attatchedEntity) {
         ListTag list = stack.getOrCreateTag().getList(ABILITI_NBT_KEY, Tag.TAG_STRING);
         HashMap<SwordAbilities.KelpSword, SwordAbilities.CustomAbility> allAbilities = SwordAbilities.KelpSword.getAbilities().getAbilityHashMap();
         list.forEach(tag -> {
@@ -193,7 +194,8 @@ public class KelpSwordItem extends SwordItem implements KelpSwordItemInterface {
                         regeneration(ability.getName());
                         break;
                     case FORCE_OF_TIDAL:
-                        forceOfTidal(ability.getName());
+                        if (attatchedEntity == null) return;
+                        forceOfTidal(ability.getName(), stack, player, attatchedEntity);
                         break;
                     case WATER_PERCEPTION:
                         waterPerception(ability.getName(), stack, player);
@@ -235,8 +237,17 @@ public class KelpSwordItem extends SwordItem implements KelpSwordItemInterface {
     /**
      * 潮汐之力 （攻击触发）
      */
-    public void forceOfTidal(String name) {
+    public void forceOfTidal(String name, ItemStack stack, Player pPlayer, Entity attackedEntity) {
         CircleMod.LOGGER.debug(name);
+//        Vec3 centerPos = attackedEntity.position().add(0, attackedEntity.getBbHeight() / 2, 0); // 中心位置略高于实体中心
+//        double radius = 2; // 流动水区域的半径
+//        Level level = pPlayer.level;
+//
+//        // 使用粒子效果模拟水流
+//        for (double angle = 0; angle < Math.PI * 2; angle += Math.PI / 8) { // 分8个方向发射粒子
+//            Vec3 direction = new Vec3(Math.cos(angle), 0, Math.sin(angle)).normalize().scale(0.6); // 调整速度
+//            level.addParticle(ParticleTypes.BUBBLE, centerPos.x, centerPos.y, centerPos.z, direction.x, 0.1, direction.z);
+//        }
     }
 
     /**
@@ -255,7 +266,8 @@ public class KelpSwordItem extends SwordItem implements KelpSwordItemInterface {
 
         nearestWaterPosnearestWaterPos.ifPresentOrElse(waterPos -> {
             CircleMod.LOGGER.debug("{}[{}]:最近的水方块位置：{}", pPlayer.getName(), name, waterPos);
-        }, () -> {CircleMod.LOGGER.debug("{}[{}]:没有找到水方块", pPlayer.getName(), name);
+        }, () -> {
+            CircleMod.LOGGER.debug("{}[{}]:没有找到水方块", pPlayer.getName(), name);
         });
     }
 }
