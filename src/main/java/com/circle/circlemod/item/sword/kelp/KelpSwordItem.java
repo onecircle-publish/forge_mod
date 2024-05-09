@@ -17,7 +17,10 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
@@ -31,8 +34,9 @@ import java.util.HashMap;
 import java.util.Optional;
 
 /**
- * 海带剑
- */
+ * @author yuanxin
+ * @date 2024-05-07 15:12
+ **/
 public class KelpSwordItem extends SwordItem implements KelpSwordItemInterface {
     public static final int MAX_ABILITY_COUNT = 2;
     public static final String ABILITI_NBT_KEY = "KelpSwordAbilities";
@@ -251,8 +255,7 @@ public class KelpSwordItem extends SwordItem implements KelpSwordItemInterface {
 
         nearestWaterPosnearestWaterPos.ifPresentOrElse(waterPos -> {
             CircleMod.LOGGER.debug("{}[{}]:最近的水方块位置：{}", pPlayer.getName(), name, waterPos);
-        }, () -> {
-            CircleMod.LOGGER.debug("{}[{}]:没有找到水方块", pPlayer.getName(), name);
+        }, () -> {CircleMod.LOGGER.debug("{}[{}]:没有找到水方块", pPlayer.getName(), name);
         });
     }
 }
