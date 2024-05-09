@@ -18,6 +18,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.schedule.Schedule;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
@@ -37,8 +38,8 @@ import java.util.*;
  * @date 2024-05-07 15:12
  **/
 public class KelpSwordItem extends SwordItem {
-    public static final int MAX_ABILITY_COUNT = 2;// 一次性产生的技能数量
-    private int waterPerceptionRadius = 2;//水之感知的半径
+    public final int MAX_ABILITY_COUNT = 2;// 一次性产生的技能数量
+    public final int waterPerceptionRadius = 100;//水之感知的半径
     public static final String ABILITI_NBT_KEY = "KelpSwordAbilities";
 
     public KelpSwordItem(Tier pTier, int pAttackDamageModifier, float pAttackSpeedModifier, Properties pProperties) {
@@ -254,7 +255,6 @@ public class KelpSwordItem extends SwordItem {
      */
     public void waterPerception(String name, ItemStack stack, Player pPlayer) {
         Level level = pPlayer.level;
-        if (level.isClientSide) return;
         Vec3 eyePosition = pPlayer.getEyePosition();
         BlockPos searchCenter = new BlockPos(eyePosition);
         AABB searchArea = new AABB(searchCenter).inflate(waterPerceptionRadius);
@@ -265,9 +265,23 @@ public class KelpSwordItem extends SwordItem {
                 .min(Comparator.comparingDouble(pos -> pos.distSqr(searchCenter)));
 
         if (neareastWaterPos.isPresent()) {
-            CircleMod.LOGGER.debug("最近{}格内水方块位置：{}", waterPerceptionRadius, neareastWaterPos.get());
+            BlockPos targetPos = neareastWaterPos.get();
+            CircleMod.LOGGER.debug("最近{}格内水方块位置：{}", waterPerceptionRadius, targetPos);
+            waterPerceptionParticles(level, searchCenter, targetPos);
         } else {
             CircleMod.LOGGER.debug("没有在{}格内找到水方块", waterPerceptionRadius);
+        }
+    }
+
+    public void waterPerceptionParticles(Level level, BlockPos start, BlockPos end) {
+        for (double i = 0; i < waterPerceptionRadius; i++) {
+            double stepX = (end.getX() + 0.5 - start.getX()) / waterPerceptionRadius;
+            double stepY = (double) (end.getY() + 1 - start.getY()) / waterPerceptionRadius;
+            double stepZ = (end.getZ() + 0.5 - start.getZ()) / waterPerceptionRadius;
+            double nextX = start.getX() + stepX * i;
+            double nextY = start.getY() + stepY * i;
+            double nextZ = start.getZ() + stepZ * i;
+            level.addParticle(ParticleTypes.COMPOSTER, nextX, nextY, nextZ, 0, 0, 0);
         }
     }
 }
