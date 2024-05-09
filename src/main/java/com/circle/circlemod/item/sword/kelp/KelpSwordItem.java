@@ -4,29 +4,21 @@ import com.circle.circlemod.CircleMod;
 import com.circle.circlemod.item.sword.SwordAbilities;
 import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.tags.TagManager;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 
-import javax.json.Json;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -56,13 +48,88 @@ public class KelpSwordItem extends SwordItem implements KelpSwordItemInterface {
         super.onCraftedBy(pStack, pLevel, pPlayer);
     }
 
+//    @Override
+//    public void initializeClient(Consumer<IItemRenderProperties> consumer) {
+//        super.initializeClient(consumer);
+//        consumer.accept(new IItemRenderProperties() {
+//            @Override
+//            public BlockEntityWithoutLevelRenderer getItemStackRenderer() {
+//                return IItemRenderProperties.super.getItemStackRenderer();
+//            }
+//        });
+//
+//    }
+
+    @Override
+    public UseAnim getUseAnimation(ItemStack pStack) {
+        return UseAnim.BLOCK;
+    }
+
+    @Override
+    public int getUseDuration(ItemStack pStack) {
+        return 72000;
+    }
+
     /**
      * 设置指定数量的能力
      * 设置nbt
      *
      * @param count
      */
-    public static void setRandomAbilities(ItemStack stack, int count) {
+    public void setRandomAbilities(ItemStack stack, int count) {
+        ArrayList<SwordAbilities.CustomAbility> randomAbilities = generateMagics(count);
+
+        setMagicTags(stack, randomAbilities);
+    }
+
+    @Override
+    public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
+        useAbilities(stack, SwordAbilities.UseType.CLICK);
+        return super.onLeftClickEntity(stack, player, entity);
+    }
+
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
+        ItemStack item = pPlayer.getItemInHand(pUsedHand);
+
+        //父类中逻辑，不可食用则不会触发startingUsingItem，这里手动调用。
+        pPlayer.startUsingItem(pUsedHand);
+        // 使用技能
+        useAbilities(item, SwordAbilities.UseType.USE);
+        return super.use(pLevel, pPlayer, pUsedHand);
+    }
+
+    /**
+     * 添加技能的hoverText
+     *
+     * @param stack
+     * @param abilities
+     */
+    public void setMagicTags(ItemStack stack, ArrayList<SwordAbilities.CustomAbility> abilities) {
+        //存储nbt
+        CompoundTag tag = stack.getOrCreateTag();
+        ListTag abilityTags = new ListTag();
+        CompoundTag compoundTag = new CompoundTag();
+        ListTag lore = new ListTag();
+
+        abilities.forEach(ability -> {
+            abilityTags.add(StringTag.valueOf(ability.getKey().toString()));
+            lore.add(StringTag.valueOf(new Gson().toJson(new TextComponent(ability.getName()))));
+        });
+
+        tag.put(ABILITI_NBT_KEY, abilityTags);
+
+        compoundTag.put("Lore", lore);
+        tag.put("display", compoundTag);
+        stack.setTag(tag);
+    }
+
+    /**
+     * 随机获取指定数量的技能
+     *
+     * @param count
+     */
+    public ArrayList<SwordAbilities.CustomAbility> generateMagics(int count) {
         SwordAbilities.CustomAbility allAbilities = SwordAbilities.KelpSword.getAbilities();
         ArrayList<Object> abilitiyKeys = new ArrayList<>();//随机到的指定数量的技能的key
         ArrayList<SwordAbilities.CustomAbility> targetAbilities = new ArrayList<>();//根据key，存储的技能对象
@@ -85,38 +152,7 @@ public class KelpSwordItem extends SwordItem implements KelpSwordItemInterface {
         abilitiyKeys.forEach(key -> {
             targetAbilities.add(allAbilities.getAbilityHashMap().get(key));
         });
-
-        //存储nbt
-        CompoundTag tag = stack.getOrCreateTag();
-        ListTag abilityTags = new ListTag();
-        CompoundTag compoundTag = new CompoundTag();
-        ListTag lore = new ListTag();
-
-        targetAbilities.forEach(ability -> {
-            abilityTags.add(StringTag.valueOf(ability.getKey().toString()));
-            lore.add(StringTag.valueOf(new Gson().toJson(new TextComponent(ability.getName()))));
-        });
-
-        tag.put(ABILITI_NBT_KEY, abilityTags);
-
-//        compoundTag.putString("Name", "{\"text\":\"test\"}");
-        compoundTag.put("Lore", lore);
-
-        tag.put("display", compoundTag);
-        stack.setTag(tag);
-    }
-
-    @Override
-    public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
-        useAbilities(stack, SwordAbilities.UseType.CLICK);
-        return super.onLeftClickEntity(stack, player, entity);
-    }
-
-    @Override
-    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
-        ItemStack item = pPlayer.getItemInHand(pUsedHand);
-        useAbilities(item, SwordAbilities.UseType.USE);
-        return super.use(pLevel, pPlayer, pUsedHand);
+        return targetAbilities;
     }
 
     /**
