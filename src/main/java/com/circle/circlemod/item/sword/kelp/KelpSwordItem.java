@@ -5,6 +5,7 @@ import com.circle.circlemod.item.sword.SwordAbilities;
 import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -29,17 +30,15 @@ import net.minecraft.world.phys.Vec3;
 import javax.annotation.Nullable;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author yuanxin
  * @date 2024-05-07 15:12
  **/
 public class KelpSwordItem extends SwordItem {
-    public static final int MAX_ABILITY_COUNT = 2;
+    public static final int MAX_ABILITY_COUNT = 2;// 一次性产生的技能数量
+    private int waterPerceptionRadius = 2;//水之感知的半径
     public static final String ABILITI_NBT_KEY = "KelpSwordAbilities";
 
     public KelpSwordItem(Tier pTier, int pAttackDamageModifier, float pAttackSpeedModifier, Properties pProperties) {
@@ -106,7 +105,7 @@ public class KelpSwordItem extends SwordItem {
         //父类中逻辑，不可食用则不会触发startingUsingItem，这里手动调用。
         pPlayer.startUsingItem(pUsedHand);
         // 使用技能
-        useAbilities(SwordAbilities.UseType.CLICK, item, pPlayer, null);
+        useAbilities(SwordAbilities.UseType.USE, item, pPlayer, null);
         return super.use(pLevel, pPlayer, pUsedHand);
     }
 
@@ -258,16 +257,17 @@ public class KelpSwordItem extends SwordItem {
         if (level.isClientSide) return;
         Vec3 eyePosition = pPlayer.getEyePosition();
         BlockPos searchCenter = new BlockPos(eyePosition);
-        int searchRadius = 25; // 50 * 50 * 50
-        // 查找最近50*50格内最近的水方块
-        AABB searchBox = new AABB(searchCenter).inflate(searchRadius);
+        AABB searchArea = new AABB(searchCenter).inflate(waterPerceptionRadius);
 
-        Optional<BlockPos> nearestWaterPosnearestWaterPos = BlockPos.betweenClosedStream(searchBox).filter(pos -> level.getBlockState(pos).getFluidState().getType() == Fluids.WATER).min(Comparator.comparingDouble(pos -> pos.distSqr(searchCenter)));
+        Optional<BlockPos> neareastWaterPos = BlockPos.betweenClosedStream(searchArea)
+                .filter(pos -> level.getBlockState(pos).getFluidState().getType() == Fluids.WATER)
+                .map(pos -> new BlockPos(pos))
+                .min(Comparator.comparingDouble(pos -> pos.distSqr(searchCenter)));
 
-        nearestWaterPosnearestWaterPos.ifPresentOrElse(waterPos -> {
-            CircleMod.LOGGER.debug("{}[{}]:最近的水方块位置：{}", pPlayer.getName(), name, waterPos);
-        }, () -> {
-            CircleMod.LOGGER.debug("{}[{}]:没有找到水方块", pPlayer.getName(), name);
-        });
+        if (neareastWaterPos.isPresent()) {
+            CircleMod.LOGGER.debug("最近{}格内水方块位置：{}", waterPerceptionRadius, neareastWaterPos.get());
+        } else {
+            CircleMod.LOGGER.debug("没有在{}格内找到水方块", waterPerceptionRadius);
+        }
     }
 }
