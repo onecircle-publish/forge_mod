@@ -1,5 +1,8 @@
 package com.circle.circlemod.item.sword.kelp;
 
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+
 public interface KelpSwordItemInterface {
     void entanglement(String name);
 
@@ -11,5 +14,5 @@ public interface KelpSwordItemInterface {
 
     void forceOfTidal(String name);
 
-    void waterPerception(String name);
+    void waterPerception(String name, ItemStack stack, Player pPlayer);
 }

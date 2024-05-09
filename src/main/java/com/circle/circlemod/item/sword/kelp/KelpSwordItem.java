@@ -4,6 +4,7 @@ import com.circle.circlemod.CircleMod;
 import com.circle.circlemod.item.sword.SwordAbilities;
 import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -18,11 +19,18 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
+import javax.swing.*;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * 海带剑
@@ -84,7 +92,7 @@ public class KelpSwordItem extends SwordItem implements KelpSwordItemInterface {
 
     @Override
     public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
-        useAbilities(stack, SwordAbilities.UseType.CLICK);
+        useAbilities(stack, player, SwordAbilities.UseType.CLICK);
         return super.onLeftClickEntity(stack, player, entity);
     }
 
@@ -95,7 +103,7 @@ public class KelpSwordItem extends SwordItem implements KelpSwordItemInterface {
         //父类中逻辑，不可食用则不会触发startingUsingItem，这里手动调用。
         pPlayer.startUsingItem(pUsedHand);
         // 使用技能
-        useAbilities(item, SwordAbilities.UseType.USE);
+        useAbilities(item, pPlayer, SwordAbilities.UseType.USE);
         return super.use(pLevel, pPlayer, pUsedHand);
     }
 
@@ -161,7 +169,7 @@ public class KelpSwordItem extends SwordItem implements KelpSwordItemInterface {
      * @param stack
      * @param type
      */
-    public void useAbilities(ItemStack stack, SwordAbilities.UseType type) {
+    public void useAbilities(ItemStack stack, Player player, SwordAbilities.UseType type) {
         ListTag list = stack.getOrCreateTag().getList(ABILITI_NBT_KEY, Tag.TAG_STRING);
         HashMap<SwordAbilities.KelpSword, SwordAbilities.CustomAbility> allAbilities = SwordAbilities.KelpSword.getAbilities().getAbilityHashMap();
         list.forEach(tag -> {
@@ -186,7 +194,7 @@ public class KelpSwordItem extends SwordItem implements KelpSwordItemInterface {
                         forceOfTidal(ability.getName());
                         break;
                     case WATER_PERCEPTION:
-                        waterPerception(ability.getName());
+                        waterPerception(ability.getName(), stack, player);
                     default:
                         break;
                 }
@@ -232,7 +240,21 @@ public class KelpSwordItem extends SwordItem implements KelpSwordItemInterface {
     /**
      * 水之感知（use触发）
      */
-    public void waterPerception(String name) {
-        CircleMod.LOGGER.debug(name);
+    public void waterPerception(String name, ItemStack stack, Player pPlayer) {
+        Level level = pPlayer.level;
+        if (level.isClientSide) return;
+        Vec3 eyePosition = pPlayer.getEyePosition();
+        BlockPos searchCenter = new BlockPos(eyePosition);
+        int searchRadius = 25; // 50 * 50 * 50
+        // 查找最近50*50格内最近的水方块
+        AABB searchBox = new AABB(searchCenter).inflate(searchRadius);
+
+        Optional<BlockPos> nearestWaterPosnearestWaterPos = BlockPos.betweenClosedStream(searchBox).filter(pos -> level.getBlockState(pos).getFluidState().getType() == Fluids.WATER).min(Comparator.comparingDouble(pos -> pos.distSqr(searchCenter)));
+
+        nearestWaterPosnearestWaterPos.ifPresentOrElse(waterPos -> {
+            CircleMod.LOGGER.debug("{}[{}]:最近的水方块位置：{}", pPlayer.getName(), name, waterPos);
+        }, () -> {
+            CircleMod.LOGGER.debug("{}[{}]:没有找到水方块", pPlayer.getName(), name);
+        });
     }
 }
