@@ -2,6 +2,7 @@ package com.circle.circlemod.effect;
 
 import com.circle.circlemod.CircleMod;
 import com.circle.circlemod.effect.charm.CharmEffect;
+import com.circle.circlemod.effect.entangle.EntangleEffect;
 import com.circle.circlemod.effect.freeze.FreezeEffect;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -24,6 +25,11 @@ public class ModEffects {
      * 魅惑效果
      */
     public static final RegistryObject<CharmEffect> CHARM_EFFECT = EFFECTS.register("charm", () -> new CharmEffect(MobEffectCategory.HARMFUL, Color.pink.getRGB()));
+
+    /**
+     * 缠绕效果
+     */
+    public static final RegistryObject<EntangleEffect> ENTANGLE_EFFECT = EFFECTS.register("charm", () -> new EntangleEffect(MobEffectCategory.HARMFUL, Color.green.getRGB()));
 
     public static void register(IEventBus iEventBus) {
         EFFECTS.register(iEventBus);
