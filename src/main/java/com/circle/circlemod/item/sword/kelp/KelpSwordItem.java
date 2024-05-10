@@ -1,6 +1,7 @@
 package com.circle.circlemod.item.sword.kelp;
 
 import com.circle.circlemod.CircleMod;
+import com.circle.circlemod.effect.ModEffects;
 import com.circle.circlemod.item.sword.SwordAbilities;
 import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
@@ -13,8 +14,11 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
@@ -36,6 +40,8 @@ import java.util.*;
  **/
 public class KelpSwordItem extends SwordItem {
     public final int MAX_ABILITY_COUNT = 2;// 一次性产生的技能数量
+    public final int ENTANGLEMENT_TICKS = 20;
+    public final int ABSORPTION_TICKS = 20 * 2;
     public final int waterPerceptionRadius = 100;//水之感知的半径
     public static final String ABILITI_NBT_KEY = "KelpSwordAbilities";
 
@@ -177,10 +183,10 @@ public class KelpSwordItem extends SwordItem {
                 SwordAbilities.KelpSword key = ability.getKey();
                 switch (key) {
                     case ENTANGLEMENT:
-                        entanglement(ability.getName());
+                        entanglement(ability.getName(), stack, player, attatchedEntity);
                         break;
                     case ABSORPTION:
-                        absorption(ability.getName());
+                        absorption(ability.getName(), stack, player, attatchedEntity);
                         break;
                     case SHIELD:
                         shield(ability.getName());
@@ -204,15 +210,29 @@ public class KelpSwordItem extends SwordItem {
     /**
      * 缠绕（攻击触发）
      */
-    public void entanglement(String name) {
+    public void entanglement(String name, ItemStack stack, Player pPlayer, Entity attackedEntity) {
         CircleMod.LOGGER.debug(name);
+        if ((attackedEntity instanceof LivingEntity)) {
+            ((LivingEntity) attackedEntity).addEffect(new MobEffectInstance(ModEffects.ENTANGLE_EFFECT.get(), ENTANGLEMENT_TICKS), pPlayer);
+        }
     }
 
     /**
      * 水分吸收（攻击触发）
      */
-    public void absorption(String name) {
+    public void absorption(String name, ItemStack stack, Player pPlayer, Entity attackedEntity) {
         CircleMod.LOGGER.debug(name);
+        if (attackedEntity instanceof LivingEntity) {
+            MobEffectInstance effect = ((LivingEntity) attackedEntity).getEffect(MobEffects.WEAKNESS);
+            if (effect == null) {
+                ((LivingEntity) attackedEntity).addEffect(new MobEffectInstance(MobEffects.WEAKNESS));
+            } else {
+                int amplifier = effect.getAmplifier() + 1;
+                ((LivingEntity) attackedEntity).addEffect(new MobEffectInstance(MobEffects.WEAKNESS, ABSORPTION_TICKS, amplifier), pPlayer);
+            }
+        }
+
+
     }
 
     /**
