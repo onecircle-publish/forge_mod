@@ -277,21 +277,17 @@ public class KelpSwordItem extends SwordItem {
         double xDuration = end.getX() - start.getX();
         double zDuration = end.getZ() - start.getZ();
 
-        double duration = Math.sqrt(dist);
         double step = 0.5;
-
-
-        ArrayList<Vec3> blockVec3 = new ArrayList<>();
-        for (double i = 0; i < duration; i += step) {
-            double nextX = start.getX() + (xDuration / duration) * i;
+        double allStep = Math.sqrt(dist) / step;
+        
+        for (double i = 0; i < allStep; i += step) {
+            double t = i / allStep;
+            double nextX = start.getX() + t * xDuration;
             double nextY = start.getZ();
-            double nextZ = start.getZ() + (zDuration / duration) * i;
-            blockVec3.add(new Vec3(nextX, nextY, nextZ));
-        }
+            double nextZ = start.getZ() + t * zDuration;
 
-        blockVec3.forEach(vec3 -> {
-            level.addParticle(ParticleTypes.COMPOSTER, vec3.x, vec3.y, vec3.z, 0, 0, 0);
-        });
+            level.addParticle(ParticleTypes.COMPOSTER, nextX, nextY, nextZ, 0, 0, 0);
+        }
 
 //        for (double i = 0; i < waterPerceptionRadius; i++) {
 //            double stepX = (end.getX() + 0.5 - start.getX()) / waterPerceptionRadius;
