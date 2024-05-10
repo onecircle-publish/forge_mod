@@ -18,7 +18,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.schedule.Schedule;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
@@ -31,7 +30,10 @@ import net.minecraft.world.phys.Vec3;
 import javax.annotation.Nullable;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Optional;
 
 /**
  * @author yuanxin
@@ -259,10 +261,7 @@ public class KelpSwordItem extends SwordItem {
         BlockPos searchCenter = new BlockPos(eyePosition);
         AABB searchArea = new AABB(searchCenter).inflate(waterPerceptionRadius);
 
-        Optional<BlockPos> neareastWaterPos = BlockPos.betweenClosedStream(searchArea)
-                .filter(pos -> level.getBlockState(pos).getFluidState().getType() == Fluids.WATER)
-                .map(pos -> new BlockPos(pos))
-                .min(Comparator.comparingDouble(pos -> pos.distSqr(searchCenter)));
+        Optional<BlockPos> neareastWaterPos = BlockPos.betweenClosedStream(searchArea).filter(pos -> level.getBlockState(pos).getFluidState().getType() == Fluids.WATER).map(pos -> new BlockPos(pos)).min(Comparator.comparingDouble(pos -> pos.distSqr(searchCenter)));
 
         if (neareastWaterPos.isPresent()) {
             BlockPos targetPos = neareastWaterPos.get();
@@ -274,14 +273,36 @@ public class KelpSwordItem extends SwordItem {
     }
 
     public void waterPerceptionParticles(Level level, BlockPos start, BlockPos end) {
-        for (double i = 0; i < waterPerceptionRadius; i++) {
-            double stepX = (end.getX() + 0.5 - start.getX()) / waterPerceptionRadius;
-            double stepY = (double) (end.getY() + 1 - start.getY()) / waterPerceptionRadius;
-            double stepZ = (end.getZ() + 0.5 - start.getZ()) / waterPerceptionRadius;
-            double nextX = start.getX() + stepX * i;
-            double nextY = start.getY() + stepY * i;
-            double nextZ = start.getZ() + stepZ * i;
-            level.addParticle(ParticleTypes.COMPOSTER, nextX, nextY, nextZ, 0, 0, 0);
+        double dist = start.distSqr(end);
+        double xDuration = end.getX() - start.getX();
+        double zDuration = end.getZ() - start.getZ();
+
+        double duration = Math.sqrt(dist);
+        double step = 0.5;
+
+
+        ArrayList<Vec3> blockVec3 = new ArrayList<>();
+        for (double i = 0; i < duration; i += step) {
+            double nextX = start.getX() + (xDuration / duration) * i;
+            double nextY = start.getZ();
+            double nextZ = start.getZ() + (zDuration / duration) * i;
+            blockVec3.add(new Vec3(nextX, nextY, nextZ));
         }
+
+        blockVec3.forEach(vec3 -> {
+            level.addParticle(ParticleTypes.COMPOSTER, vec3.x, vec3.y, vec3.z, 0, 0, 0);
+        });
+
+//        for (double i = 0; i < waterPerceptionRadius; i++) {
+//            double stepX = (end.getX() + 0.5 - start.getX()) / waterPerceptionRadius;
+//            double stepY = (double) (end.getY() + 1 - start.getY()) / waterPerceptionRadius;
+//            double stepZ = (end.getZ() + 0.5 - start.getZ()) / waterPerceptionRadius;
+//            double nextX = start.getX() + stepX * i;
+//            double nextY = start.getY() + stepY * i;
+//            double nextZ = start.getZ() + stepZ * i;
+//
+//
+//            level.addParticle(ParticleTypes.COMPOSTER, nextX, nextY, nextZ, 0, 0, 0);
+//        }
     }
 }
