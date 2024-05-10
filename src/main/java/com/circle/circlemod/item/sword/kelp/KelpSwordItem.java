@@ -6,7 +6,6 @@ import com.circle.circlemod.item.sword.SwordAbilities;
 import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -27,10 +26,7 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
-
+import net.minecraft.world.level.block.Blocks;
 import javax.annotation.Nullable;
 import java.util.*;
 
@@ -42,7 +38,6 @@ public class KelpSwordItem extends SwordItem {
     public final int MAX_ABILITY_COUNT = 2;// 一次性产生的技能数量
     public final int ENTANGLEMENT_TICKS = 20;
     public final int ABSORPTION_TICKS = 20 * 2;
-    public final int waterPerceptionRadius = 100;//水之感知的半径
     public static final String ABILITI_NBT_KEY = "KelpSwordAbilities";
 
     public KelpSwordItem(Tier pTier, int pAttackDamageModifier, float pAttackSpeedModifier, Properties pProperties) {
@@ -198,8 +193,6 @@ public class KelpSwordItem extends SwordItem {
                         if (attatchedEntity == null) return;
                         forceOfTidal(ability.getName(), stack, player, attatchedEntity);
                         break;
-                    case WATER_PERCEPTION:
-                        waterPerception(ability.getName(), stack, player);
                     default:
                         break;
                 }
@@ -225,14 +218,12 @@ public class KelpSwordItem extends SwordItem {
         if (attackedEntity instanceof LivingEntity) {
             MobEffectInstance effect = ((LivingEntity) attackedEntity).getEffect(MobEffects.WEAKNESS);
             if (effect == null) {
-                ((LivingEntity) attackedEntity).addEffect(new MobEffectInstance(MobEffects.WEAKNESS));
+                ((LivingEntity) attackedEntity).addEffect(new MobEffectInstance(MobEffects.WEAKNESS, ABSORPTION_TICKS), pPlayer);
             } else {
                 int amplifier = effect.getAmplifier() + 1;
                 ((LivingEntity) attackedEntity).addEffect(new MobEffectInstance(MobEffects.WEAKNESS, ABSORPTION_TICKS, amplifier), pPlayer);
             }
         }
-
-
     }
 
     /**
@@ -254,63 +245,15 @@ public class KelpSwordItem extends SwordItem {
      */
     public void forceOfTidal(String name, ItemStack stack, Player pPlayer, Entity attackedEntity) {
         CircleMod.LOGGER.debug(name);
-//        Vec3 centerPos = attackedEntity.position().add(0, attackedEntity.getBbHeight() / 2, 0); // 中心位置略高于实体中心
-//        double radius = 2; // 流动水区域的半径
-//        Level level = pPlayer.level;
-//
-//        // 使用粒子效果模拟水流
-//        for (double angle = 0; angle < Math.PI * 2; angle += Math.PI / 8) { // 分8个方向发射粒子
-//            Vec3 direction = new Vec3(Math.cos(angle), 0, Math.sin(angle)).normalize().scale(0.6); // 调整速度
-//            level.addParticle(ParticleTypes.BUBBLE, centerPos.x, centerPos.y, centerPos.z, direction.x, 0.1, direction.z);
-//        }
-    }
-
-    /**
-     * 水之感知（use触发）
-     */
-    public void waterPerception(String name, ItemStack stack, Player pPlayer) {
-        Level level = pPlayer.level;
-        Vec3 eyePosition = pPlayer.getEyePosition();
-        BlockPos searchCenter = new BlockPos(eyePosition);
-        AABB searchArea = new AABB(searchCenter).inflate(waterPerceptionRadius);
-
-        Optional<BlockPos> neareastWaterPos = BlockPos.betweenClosedStream(searchArea).filter(pos -> level.getBlockState(pos).getFluidState().getType() == Fluids.WATER).map(pos -> new BlockPos(pos)).min(Comparator.comparingDouble(pos -> pos.distSqr(searchCenter)));
-
-        if (neareastWaterPos.isPresent()) {
-            BlockPos targetPos = neareastWaterPos.get();
-            CircleMod.LOGGER.debug("最近{}格内水方块位置：{}", waterPerceptionRadius, targetPos);
-            waterPerceptionParticles(level, searchCenter, targetPos);
-        } else {
-            CircleMod.LOGGER.debug("没有在{}格内找到水方块", waterPerceptionRadius);
-        }
-    }
-
-    public void waterPerceptionParticles(Level level, BlockPos start, BlockPos end) {
-        double dist = start.distSqr(end);
-        double xDuration = end.getX() - start.getX();
-        double zDuration = end.getZ() - start.getZ();
-
-        double step = 0.5;
-        double allStep = Math.sqrt(dist) / step;
-
-        for (double i = 0; i < allStep; i += step) {
-            double t = i / allStep;
-            double nextX = start.getX() + t * xDuration;
-            double nextY = start.getZ();
-            double nextZ = start.getZ() + t * zDuration;
-
-            level.addParticle(ParticleTypes.COMPOSTER, nextX, nextY, nextZ, 0, 0, 0);
-        }
-
-//        for (double i = 0; i < waterPerceptionRadius; i++) {
-//            double stepX = (end.getX() + 0.5 - start.getX()) / waterPerceptionRadius;
-//            double stepY = (double) (end.getY() + 1 - start.getY()) / waterPerceptionRadius;
-//            double stepZ = (end.getZ() + 0.5 - start.getZ()) / waterPerceptionRadius;
-//            double nextX = start.getX() + stepX * i;
-//            double nextY = start.getY() + stepY * i;
-//            double nextZ = start.getZ() + stepZ * i;
-
-//            level.addParticle(ParticleTypes.COMPOSTER, nextX, nextY, nextZ, 0, 0, 0);
-//        }
+        Level level = attackedEntity.level;
+        BlockPos pos = attackedEntity.blockPosition();
+        level.setBlock(pos, Blocks.WATER.defaultBlockState(), 3);
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+            }
+        }, 1500);
     }
 }

@@ -19,8 +19,7 @@ public class SwordAbilities {
         ABSORPTION,//水分吸收
         SHIELD,//护盾
         REGENERATION,//再生
-        FORCE_OF_TIDAL,//潮汐之力
-        WATER_PERCEPTION;//水之感知
+        FORCE_OF_TIDAL;//潮汐之力;//水之感知
 
         public static CustomAbility getAbilities() {
             CustomAbility customAbility = new CustomAbility();
@@ -29,7 +28,6 @@ public class SwordAbilities {
             customAbility.setHashMap(KelpSword.SHIELD, UseType.USING_TICK, "水之护盾");
             customAbility.setHashMap(KelpSword.FORCE_OF_TIDAL, UseType.CLICK, "潮汐之力");
             customAbility.setHashMap(KelpSword.REGENERATION, UseType.USING_TICK, "水愈");
-            customAbility.setHashMap(KelpSword.WATER_PERCEPTION, UseType.USE, "水之感知");
             return customAbility;
         }
     }
