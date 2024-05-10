@@ -29,12 +29,10 @@ public class ModParticles {
      * 冰冻粒子（雪花）
      */
     public static final RegistryObject<SimpleParticleType> FREEZE_PARTICLE = PARTICLE_TYPES.register("freeze_particle", () -> new SimpleParticleType(true));
-
     /**
      * 魅惑粒子（爱心）
      */
     public static final RegistryObject<SimpleParticleType> CHARM_PARTICLE = PARTICLE_TYPES.register("loving_particle", () -> new SimpleParticleType(true));
-
     /**
      * 毁灭菇粒子
      */

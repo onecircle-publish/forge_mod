@@ -20,7 +20,6 @@ import java.util.UUID;
 public class EntangleEffect extends MobEffect {
     public static final UUID entangleUUID = UUID.fromString("232BE823-1A65-4AB2-A7EE-DD50D593557E");
 
-
     public EntangleEffect(MobEffectCategory pCategory, int pColor) {
         super(pCategory, pColor);
     }
@@ -42,4 +41,8 @@ public class EntangleEffect extends MobEffect {
         super.removeAttributeModifiers(livingEntity, attributeMap, p_19471_);
     }
 
+    @Override
+    public boolean isDurationEffectTick(int pDuration, int pAmplifier) {
+        return true;
+    }
 }

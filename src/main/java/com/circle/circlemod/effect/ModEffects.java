@@ -29,7 +29,7 @@ public class ModEffects {
     /**
      * 缠绕效果
      */
-    public static final RegistryObject<EntangleEffect> ENTANGLE_EFFECT = EFFECTS.register("charm", () -> new EntangleEffect(MobEffectCategory.HARMFUL, Color.green.getRGB()));
+    public static final RegistryObject<EntangleEffect> ENTANGLE_EFFECT = EFFECTS.register("entangle", () -> new EntangleEffect(MobEffectCategory.HARMFUL, Color.green.getRGB()));
 
     public static void register(IEventBus iEventBus) {
         EFFECTS.register(iEventBus);
