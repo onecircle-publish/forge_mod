@@ -28,12 +28,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author yuanxin
@@ -143,27 +138,25 @@ public class KelpSwordItem extends SwordItem {
      * @param count
      */
     public ArrayList<SwordAbilities.CustomAbility> generateMagics(int count) {
+        Random random = new Random();
         SwordAbilities.CustomAbility allAbilities = SwordAbilities.KelpSword.getAbilities();
-        ArrayList<Object> abilitiyKeys = new ArrayList<>();//随机到的指定数量的技能的key
         ArrayList<SwordAbilities.CustomAbility> targetAbilities = new ArrayList<>();//根据key，存储的技能对象
 
         // 取从0到count之间的随机数，随机数用来从allAbilities中取技能
-        SecureRandom random = null;
-        try {
-            random = SecureRandom.getInstance("SHA1PRNG");
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-        for (int i = 0; i < count; i++) {
-            int randomInt = random.nextInt(allAbilities.getAbilityHashMap().size());
-            CircleMod.LOGGER.debug(String.valueOf(randomInt));
-            while (abilitiyKeys.contains(randomInt)) {
-                randomInt = random.nextInt(allAbilities.getAbilityHashMap().size());
+        HashMap<SwordAbilities.KelpSword, SwordAbilities.CustomAbility> abilityHashMap = allAbilities.getAbilityHashMap();
+        HashSet<Integer> keys = new HashSet<>();
+
+        while (keys.size() < count) {
+            int randomInt = random.nextInt(abilityHashMap.size());
+
+            if (!keys.contains(randomInt)) {
+                keys.add(randomInt);
             }
-            abilitiyKeys.add(allAbilities.getAbilityHashMap().keySet().toArray()[i]);//对应索引下的CustomAbility对象
         }
-        abilitiyKeys.forEach(key -> {
-            targetAbilities.add(allAbilities.getAbilityHashMap().get(key));
+
+        Object[] keyArray = allAbilities.abilityHashMap.keySet().toArray();
+        keys.forEach(key -> {
+            targetAbilities.add(abilityHashMap.get(keyArray[key]));
         });
         return targetAbilities;
     }
@@ -279,7 +272,7 @@ public class KelpSwordItem extends SwordItem {
 
         double step = 0.5;
         double allStep = Math.sqrt(dist) / step;
-        
+
         for (double i = 0; i < allStep; i += step) {
             double t = i / allStep;
             double nextX = start.getX() + t * xDuration;
@@ -296,8 +289,7 @@ public class KelpSwordItem extends SwordItem {
 //            double nextX = start.getX() + stepX * i;
 //            double nextY = start.getY() + stepY * i;
 //            double nextZ = start.getZ() + stepZ * i;
-//
-//
+
 //            level.addParticle(ParticleTypes.COMPOSTER, nextX, nextY, nextZ, 0, 0, 0);
 //        }
     }
