@@ -1,10 +1,11 @@
-package com.circle.circlemod.entity.block.charm;
+package com.circle.circlemod.entity.charm;
 
 import com.circle.circlemod.effect.ModEffects;
 import com.circle.circlemod.entity.ModEntities;
-import com.circle.circlemod.entity.block.doom.DoomMushroomEntity;
+import com.circle.circlemod.entity.doom.DoomMushroomEntity;
 import com.circle.circlemod.paticle.ModParticles;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -14,6 +15,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -24,19 +26,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CharmMushroomEntity extends Entity {
-    private static final EntityDataAccessor<Integer> TICK = SynchedEntityData.defineId(DoomMushroomEntity.class, EntityDataSerializers.INT);
-
+    private static final EntityDataAccessor<Integer> TICK = SynchedEntityData.defineId(CharmMushroomEntity.class, EntityDataSerializers.INT);
     private final int charmDuration = 100;//增加的效果持续时间
-
     private final int mushroomLifetime = 120;//魅惑菇存在时间
-
     private LivingEntity onwer;
 
     public CharmMushroomEntity(EntityType<?> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-        if (this.level.isEmptyBlock(this.blockPosition().below())) {
-            this.remove(RemovalReason.DISCARDED);
-        }
+    }
+
+    public CharmMushroomEntity(EntityType<? extends ItemFrame> pEntityType, Level pLevel, BlockPos pPos, Direction pDirection) {
+        this(pEntityType, pLevel);
+        this.setPos(pPos.getX(), pPos.getY(), pPos.getZ());
     }
 
     public CharmMushroomEntity(Level pLevel, BlockPos pos, @Nullable LivingEntity pOwner) {

@@ -1,6 +1,6 @@
 package com.circle.circlemod.block.doom;
 
-import com.circle.circlemod.entity.block.doom.DoomMushroomEntity;
+import com.circle.circlemod.entity.doom.DoomMushroomEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;

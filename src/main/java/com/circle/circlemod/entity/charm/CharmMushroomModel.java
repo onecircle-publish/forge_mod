@@ -1,4 +1,4 @@
-package com.circle.circlemod.entity.block.doom;// Made with Blockbench 4.9.4
+package com.circle.circlemod.entity.charm;// Made with Blockbench 4.9.4
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
 
@@ -12,12 +12,13 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 
-public class DoomMushroomModel extends EntityModel<DoomMushroomEntity> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(CircleMod.MOD_ID, "doom_mushroom"), "main");
+public class CharmMushroomModel<T extends CharmMushroomEntity> extends EntityModel<T> {
+    // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(CircleMod.MOD_ID, "charm_mushroom"), "main");
 
     private final ModelPart bone;
 
-    public DoomMushroomModel(ModelPart root) {
+    public CharmMushroomModel(ModelPart root) {
         this.bone = root.getChild("bone");
     }
 
@@ -30,11 +31,11 @@ public class DoomMushroomModel extends EntityModel<DoomMushroomEntity> {
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        bone.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
     }
 
     @Override
-    public void setupAnim(DoomMushroomEntity pEntity, float pLimbSwing, float pLimbSwingAmount, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        bone.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 }

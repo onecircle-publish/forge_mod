@@ -1,4 +1,4 @@
-package com.circle.circlemod.entity.block.charm;
+package com.circle.circlemod.entity.charm;
 
 import com.circle.circlemod.CircleMod;
 import com.mojang.blaze3d.vertex.PoseStack;

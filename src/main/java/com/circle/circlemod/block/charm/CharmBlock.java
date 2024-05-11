@@ -1,6 +1,6 @@
 package com.circle.circlemod.block.charm;
 
-import com.circle.circlemod.entity.block.charm.CharmMushroomEntity;
+import com.circle.circlemod.entity.charm.CharmMushroomEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;

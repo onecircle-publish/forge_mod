@@ -1,4 +1,4 @@
-package com.circle.circlemod.entity.block.doom;
+package com.circle.circlemod.entity.doom;
 
 import com.circle.circlemod.CircleMod;
 import com.mojang.blaze3d.vertex.PoseStack;

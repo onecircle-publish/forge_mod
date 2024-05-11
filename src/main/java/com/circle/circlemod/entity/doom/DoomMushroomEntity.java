@@ -1,8 +1,7 @@
-package com.circle.circlemod.entity.block.doom;
+package com.circle.circlemod.entity.doom;
 
 import com.circle.circlemod.CircleMod;
 import com.circle.circlemod.entity.ModEntities;
-import com.circle.circlemod.paticle.ModParticles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
