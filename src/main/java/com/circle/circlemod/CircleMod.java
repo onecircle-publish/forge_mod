@@ -16,6 +16,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
+import software.bernie.geckolib3.GeckoLib;
 
 @Mod(CircleMod.MOD_ID)
 public class CircleMod {
@@ -31,6 +32,8 @@ public class CircleMod {
         ModEffects.register(modEventBus);
         ModEntities.register(modEventBus);
         modEventBus.addListener(this::setup);
+
+        GeckoLib.initialize();
         MinecraftForge.EVENT_BUS.register(this);
     }
 
