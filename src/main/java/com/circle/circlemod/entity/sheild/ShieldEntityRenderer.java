@@ -1,5 +1,6 @@
 package com.circle.circlemod.entity.sheild;
 
+import com.circle.circlemod.CircleMod;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -16,7 +17,7 @@ public class ShieldEntityRenderer extends GeoEntityRenderer<ShieldEntity> {
 
     @Override
     public ResourceLocation getTextureLocation(ShieldEntity animatable) {
-        return new ResourceLocation("texture/entity/shield.png");
+        return new ResourceLocation(CircleMod.MOD_ID, "textures/entity/shield.png");
     }
 
     @Override
