@@ -9,7 +9,6 @@ import java.util.HashMap;
  */
 public class SwordAbilities {
     public enum UseType {
-        USING_TICK,//按住右键触发
         USE,//右键使用时触发
         CLICK //攻击时触发
     }
@@ -25,10 +24,15 @@ public class SwordAbilities {
             CustomAbility customAbility = new CustomAbility();
             customAbility.setHashMap(KelpSword.ENTANGLEMENT, UseType.CLICK, "缠绕");
             customAbility.setHashMap(KelpSword.ABSORPTION, UseType.CLICK, "水分吸收");
-            customAbility.setHashMap(KelpSword.SHIELD, UseType.USING_TICK, "水之护盾");
+            customAbility.setHashMap(KelpSword.SHIELD, UseType.USE, "水之护盾");
             customAbility.setHashMap(KelpSword.FORCE_OF_TIDAL, UseType.CLICK, "潮汐之力");
-            customAbility.setHashMap(KelpSword.REGENERATION, UseType.USING_TICK, "水愈");
+            customAbility.setHashMap(KelpSword.REGENERATION, UseType.USE, "水愈");
             return customAbility;
+        }
+
+        @Override
+        public String toString() {
+            return super.toString();
         }
     }
 

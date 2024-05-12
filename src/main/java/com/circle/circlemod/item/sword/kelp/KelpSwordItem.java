@@ -2,6 +2,8 @@ package com.circle.circlemod.item.sword.kelp;
 
 import com.circle.circlemod.CircleMod;
 import com.circle.circlemod.effect.ModEffects;
+import com.circle.circlemod.entity.ModEntities;
+import com.circle.circlemod.entity.sheild.ShieldEntity;
 import com.circle.circlemod.item.sword.SwordAbilities;
 import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
@@ -18,6 +20,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
@@ -27,6 +30,7 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+
 import javax.annotation.Nullable;
 import java.util.*;
 
@@ -39,6 +43,8 @@ public class KelpSwordItem extends SwordItem {
     public final int ENTANGLEMENT_TICKS = 20;
     public final int ABSORPTION_TICKS = 20 * 2;
     public static final String ABILITI_NBT_KEY = "KelpSwordAbilities";
+    public ArrayList<SwordAbilities.CustomAbility> currentAbilities = null;
+    public ShieldEntity shieldEntity = null;//护盾实体
 
     public KelpSwordItem(Tier pTier, int pAttackDamageModifier, float pAttackSpeedModifier, Properties pProperties) {
         super(pTier, pAttackDamageModifier, pAttackSpeedModifier, pProperties);
@@ -57,18 +63,6 @@ public class KelpSwordItem extends SwordItem {
         super.onCraftedBy(pStack, pLevel, pPlayer);
     }
 
-//    @Override
-//    public void initializeClient(Consumer<IItemRenderProperties> consumer) {
-//        super.initializeClient(consumer);
-//        consumer.accept(new IItemRenderProperties() {
-//            @Override
-//            public BlockEntityWithoutLevelRenderer getItemStackRenderer() {
-//                return IItemRenderProperties.super.getItemStackRenderer();
-//            }
-//        });
-//
-//    }
-
     @Override
     public UseAnim getUseAnimation(ItemStack pStack) {
         return UseAnim.BLOCK;
@@ -81,13 +75,12 @@ public class KelpSwordItem extends SwordItem {
 
     /**
      * 设置指定数量的能力
-     * 设置nbt
+     * 设置tag
      *
      * @param count
      */
     public void setRandomAbilities(ItemStack stack, int count) {
         ArrayList<SwordAbilities.CustomAbility> randomAbilities = generateMagics(count);
-
         setMagicTags(stack, randomAbilities);
     }
 
@@ -109,7 +102,7 @@ public class KelpSwordItem extends SwordItem {
     }
 
     /**
-     * 添加技能的hoverText
+     * 添加技能tag
      *
      * @param stack
      * @param abilities
@@ -184,7 +177,7 @@ public class KelpSwordItem extends SwordItem {
                         absorption(ability.getName(), stack, player, attatchedEntity);
                         break;
                     case SHIELD:
-                        shield(ability.getName());
+                        shield(ability.getName(), stack, player);
                         break;
                     case REGENERATION:
                         regeneration(ability.getName());
@@ -229,8 +222,14 @@ public class KelpSwordItem extends SwordItem {
     /**
      * 护盾（use触发）
      */
-    public void shield(String name) {
+    public void shield(String name, ItemStack stack, Player pPlayer) {
         CircleMod.LOGGER.debug(name);
+        if (this.shieldEntity != null) {
+            this.shieldEntity.remove(Entity.RemovalReason.UNLOADED_TO_CHUNK);
+        }
+        this.shieldEntity = new ShieldEntity(ModEntities.SHIELD_ENTITY.get(), pPlayer.level);
+        shieldEntity.setBindLivingEntity(pPlayer);
+        pPlayer.level.addFreshEntity(shieldEntity);
     }
 
     /**
@@ -255,5 +254,11 @@ public class KelpSwordItem extends SwordItem {
                 level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
             }
         }, 1500);
+    }
+
+    public boolean hasShield(ItemStack stack) {
+        CompoundTag tag = stack.getOrCreateTag();
+        ListTag list = tag.getList(ABILITI_NBT_KEY, Tag.TAG_STRING);
+        return list.contains(StringTag.valueOf(SwordAbilities.KelpSword.SHIELD.toString()));
     }
 }
