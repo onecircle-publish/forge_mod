@@ -12,7 +12,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -33,8 +32,7 @@ import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public class ShieldEntity extends LivingEntity implements IAnimatable {
     protected static final AnimationBuilder ROTATE = new AnimationBuilder().addAnimation("rotate", ILoopType.EDefaultLoopTypes.LOOP);
-    protected static final AnimationBuilder ROTATE_HOLD = new AnimationBuilder().addAnimation("rotate_hold", ILoopType.EDefaultLoopTypes.HOLD_ON_LAST_FRAME);
-    protected static final AnimationBuilder SHOW = new AnimationBuilder().addAnimation("show", ILoopType.EDefaultLoopTypes.HOLD_ON_LAST_FRAME);
+    protected static final AnimationBuilder SHOW = new AnimationBuilder().addAnimation("show", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
     protected static final AnimationBuilder DISAPPEAR = new AnimationBuilder().addAnimation("disappear", ILoopType.EDefaultLoopTypes.HOLD_ON_LAST_FRAME);
     private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
     private static final EntityDataAccessor<Integer> BIND_LIVING_ENTITY_ID = SynchedEntityData.defineId(ShieldEntity.class, EntityDataSerializers.INT);
@@ -48,12 +46,6 @@ public class ShieldEntity extends LivingEntity implements IAnimatable {
         return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, 4).build();
     }
 
-    public void checkBindLivingEntity() {
-        if (this.getBindLivingEntity() == null) {
-            this.remove(RemovalReason.DISCARDED);
-        }
-    }
-
     @Override
     protected void doPush(Entity pEntity) {
 
@@ -61,13 +53,17 @@ public class ShieldEntity extends LivingEntity implements IAnimatable {
 
     @Override
     public void tick() {
-        checkBindLivingEntity();
         callShield();
     }
 
     @Override
     public boolean isAlwaysTicking() {
         return true;
+    }
+
+    @Override
+    public void checkDespawn() {
+        super.checkDespawn();
     }
 
     public void callShield() {
@@ -95,6 +91,7 @@ public class ShieldEntity extends LivingEntity implements IAnimatable {
 
     public void moveToBindLivingEntity() {
         LivingEntity entity = getBindLivingEntity();
+
         if (entity == null) return;
 
         Vec3 position = entity.getPosition(0);
@@ -158,7 +155,6 @@ public class ShieldEntity extends LivingEntity implements IAnimatable {
     @Override
     public void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
-        checkBindLivingEntity();
     }
 
     @Override
@@ -204,26 +200,45 @@ public class ShieldEntity extends LivingEntity implements IAnimatable {
 
     public <E extends ShieldEntity> PlayState rotateAnimation(final AnimationEvent<E> event) {
         AnimationController<E> controller = event.getController();
-//
-//        if (getIsShieldShow()) {
-//            controller.setAnimation(new AnimationBuilder().addAnimation("show").addAnimation("rotate"));
-//        } else {
-//            event.getController().clearAnimationCache();
-//            return PlayState.STOP;
-//        }
+
+        if (controller.getCurrentAnimation() == null) {
+            controller.setAnimation(ROTATE);
+        }
         return PlayState.CONTINUE;
     }
 
+    /**
+     * 动画文档 https://github.com/bernie-g/geckolib/wiki/Defining-Animations-in-Code-(Geckolib3)
+     * 每次调用set，会重新刷新动画。所以要充分的判断，防止重复调用set
+     *
+     * @param event
+     * @param <E>
+     * @return
+     */
     public <E extends ShieldEntity> PlayState visibleAnimation(final AnimationEvent<E> event) {
         AnimationController<E> controller = event.getController();
-        boolean isShieldShow = getIsShieldShow();
 
-        if (isShieldShow) {
+        if (controller.getCurrentAnimation() == null) {
             controller.setAnimation(SHOW);
-        } else {
-            controller.setAnimation(DISAPPEAR);
-
+            return PlayState.CONTINUE;
         }
+
+        if (!getIsShieldShow()) {
+            if (!controller.getCurrentAnimation().animationName.equals("disappear")) {
+                controller.setAnimation(DISAPPEAR);
+                return PlayState.CONTINUE;
+            }
+            if (controller.getAnimationState() == AnimationState.Stopped) {
+                this.remove(RemovalReason.KILLED);
+                return PlayState.STOP;
+            }
+        } else {
+            if (!controller.getCurrentAnimation().animationName.equals("show")) {
+                controller.setAnimation(SHOW);
+                return PlayState.CONTINUE;
+            }
+        }
+
         return PlayState.CONTINUE;
     }
 

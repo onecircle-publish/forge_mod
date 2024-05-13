@@ -30,8 +30,10 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 
 import javax.annotation.Nullable;
+import java.security.DrbgParameters;
 import java.util.*;
 
 /**
@@ -44,7 +46,7 @@ public class KelpSwordItem extends SwordItem {
     public final int ABSORPTION_TICKS = 20 * 2;
     public static final String ABILITI_NBT_KEY = "KelpSwordAbilities";
     public ArrayList<SwordAbilities.CustomAbility> currentAbilities = null;
-    public ShieldEntity shieldEntity = null;//护盾实体
+    public ShieldEntity shieldEntity = null;
 
     public KelpSwordItem(Tier pTier, int pAttackDamageModifier, float pAttackSpeedModifier, Properties pProperties) {
         super(pTier, pAttackDamageModifier, pAttackSpeedModifier, pProperties);
@@ -224,12 +226,24 @@ public class KelpSwordItem extends SwordItem {
      */
     public void shield(String name, ItemStack stack, Player pPlayer) {
         CircleMod.LOGGER.debug(name);
-        if (this.shieldEntity != null) {
-            this.shieldEntity.remove(Entity.RemovalReason.UNLOADED_TO_CHUNK);
+        if (pPlayer.level.isClientSide()) return;
+        if (shieldEntity == null || shieldEntity.level != pPlayer.level) {
+            shieldEntity = new ShieldEntity(ModEntities.SHIELD_ENTITY.get(), pPlayer.level);
+            shieldEntity.setBindLivingEntity(pPlayer);
+            pPlayer.level.addFreshEntity(shieldEntity);
+        } else {
+            if (shieldEntity.getBindLivingEntity() != pPlayer) {
+                shieldEntity.setBindLivingEntity(pPlayer);
+            }
         }
-        this.shieldEntity = new ShieldEntity(ModEntities.SHIELD_ENTITY.get(), pPlayer.level);
-        shieldEntity.setBindLivingEntity(pPlayer);
-        pPlayer.level.addFreshEntity(shieldEntity);
+        if (shieldEntity.isRemoved()) {
+            pPlayer.level.addFreshEntity(shieldEntity);
+        }
+    }
+
+    @Override
+    public boolean useOnRelease(ItemStack pStack) {
+        return super.useOnRelease(pStack);
     }
 
     /**
