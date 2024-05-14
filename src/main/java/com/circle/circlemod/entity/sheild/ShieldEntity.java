@@ -1,17 +1,17 @@
 package com.circle.circlemod.entity.sheild;
 
-import com.circle.circlemod.item.ModItems;
-import com.circle.circlemod.item.sword.kelp.KelpSwordItem;
+import com.circle.circlemod.CircleMod;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -31,19 +31,22 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public class ShieldEntity extends LivingEntity implements IAnimatable {
-    protected static final AnimationBuilder ROTATE = new AnimationBuilder().addAnimation("rotate", ILoopType.EDefaultLoopTypes.LOOP);
-    protected static final AnimationBuilder SHOW = new AnimationBuilder().addAnimation("show", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    protected static final AnimationBuilder DISAPPEAR = new AnimationBuilder().addAnimation("disappear", ILoopType.EDefaultLoopTypes.HOLD_ON_LAST_FRAME);
-    private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
-    private static final EntityDataAccessor<Integer> BIND_LIVING_ENTITY_ID = SynchedEntityData.defineId(ShieldEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> IS_SHOW = SynchedEntityData.defineId(ShieldEntity.class, EntityDataSerializers.BOOLEAN);
+    private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
     public ShieldEntity(EntityType<? extends LivingEntity> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+        this.noPhysics = true;
     }
 
     public static AttributeSupplier setAttributes() {
         return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, 4).build();
+    }
+
+    public void moveToBindLivingEntity(LivingEntity entity) {
+        Vec3 position = entity.getPosition(1);
+        CircleMod.LOGGER.debug("positon x:{},y:{},z{}", position.x, position.y, position.z);
+        this.move(MoverType.SELF, new Vec3(position.x - this.getX(), position.y - this.getY(), position.z - this.getZ()));
     }
 
     @Override
@@ -53,66 +56,20 @@ public class ShieldEntity extends LivingEntity implements IAnimatable {
 
     @Override
     public void tick() {
-        callShield();
+        super.tick();
+    }
+
+    public void setIsShieldShow(boolean value) {
+        this.entityData.set(IS_SHOW, value);
+    }
+
+    public boolean getIsShieldShow() {
+        return this.entityData.get(IS_SHOW);
     }
 
     @Override
     public boolean isAlwaysTicking() {
         return true;
-    }
-
-    @Override
-    public void checkDespawn() {
-        super.checkDespawn();
-    }
-
-    public void callShield() {
-        LivingEntity bindLivingEntity = getBindLivingEntity();
-        if (bindLivingEntity == null) return;
-
-        ItemStack itemInHand = bindLivingEntity.getItemInHand(InteractionHand.MAIN_HAND);
-        // 是否手拿海带剑
-        if (itemInHand.is(ModItems.KELP_SWORD.get())) {
-            if (((KelpSwordItem) itemInHand.getItem()).hasShield(itemInHand) && bindLivingEntity.isUsingItem()) {
-                setIsShieldShow(true);
-                moveToBindLivingEntity();
-            } else {
-                setIsShieldShow(false);
-            }
-        } else {
-            setIsShieldShow(false);
-        }
-    }
-
-    // 设置跟随的玩家
-    public void setBindLivingEntity(LivingEntity entity) {
-        this.entityData.set(BIND_LIVING_ENTITY_ID, entity.getId());
-    }
-
-    public void moveToBindLivingEntity() {
-        LivingEntity entity = getBindLivingEntity();
-
-        if (entity == null) return;
-
-        Vec3 position = entity.getPosition(0);
-        this.move(MoverType.SELF, new Vec3(position.x - this.getX(), position.y - this.getY(), position.z - this.getZ()));
-    }
-
-    public LivingEntity getBindLivingEntity() {
-        Entity entity = this.level.getEntity(this.entityData.get(BIND_LIVING_ENTITY_ID));
-        if (!(entity instanceof LivingEntity)) return null;
-        return (LivingEntity) entity;
-    }
-
-    public void setIsShieldShow(boolean value) {
-        Boolean isShow = this.entityData.get(IS_SHOW);
-        if (value != isShow) {
-            this.entityData.set(IS_SHOW, value);
-        }
-    }
-
-    public boolean getIsShieldShow() {
-        return this.entityData.get(IS_SHOW);
     }
 
     @Override
@@ -130,6 +87,21 @@ public class ShieldEntity extends LivingEntity implements IAnimatable {
         return false;
     }
 
+    @Override
+    public void aiStep() {
+        super.aiStep();
+    }
+
+    @Override
+    public boolean canBeAffected(MobEffectInstance pEffectInstance) {
+        return false;
+    }
+
+    @Override
+    public boolean canAttack(LivingEntity pLivingentity, TargetingConditions pCondition) {
+        return false;
+    }
+
     @Nullable
     @Override
     public Team getTeam() {
@@ -141,14 +113,8 @@ public class ShieldEntity extends LivingEntity implements IAnimatable {
     }
 
     @Override
-    public void move(MoverType pType, Vec3 pPos) {
-        super.move(pType, pPos);
-    }
-
-    @Override
     public void defineSynchedData() {
         super.defineSynchedData();
-        this.entityData.define(BIND_LIVING_ENTITY_ID, -1);
         this.entityData.define(IS_SHOW, false);
     }
 
@@ -202,7 +168,7 @@ public class ShieldEntity extends LivingEntity implements IAnimatable {
         AnimationController<E> controller = event.getController();
 
         if (controller.getCurrentAnimation() == null) {
-            controller.setAnimation(ROTATE);
+            controller.setAnimation(new AnimationBuilder().addAnimation("rotate", ILoopType.EDefaultLoopTypes.LOOP));
         }
         return PlayState.CONTINUE;
     }
@@ -219,23 +185,22 @@ public class ShieldEntity extends LivingEntity implements IAnimatable {
         AnimationController<E> controller = event.getController();
 
         if (controller.getCurrentAnimation() == null) {
-            controller.setAnimation(SHOW);
+            controller.markNeedsReload();
+            controller.setAnimation(new AnimationBuilder().addAnimation("show", ILoopType.EDefaultLoopTypes.HOLD_ON_LAST_FRAME));
             return PlayState.CONTINUE;
         }
-
         if (!getIsShieldShow()) {
-            if (!controller.getCurrentAnimation().animationName.equals("disappear")) {
-                controller.setAnimation(DISAPPEAR);
-                return PlayState.CONTINUE;
-            }
-            if (controller.getAnimationState() == AnimationState.Stopped) {
-                this.remove(RemovalReason.KILLED);
+            if (!(controller.getAnimationState() == AnimationState.Running)) {
+                controller.markNeedsReload();
                 return PlayState.STOP;
+            }
+
+            if (!controller.getCurrentAnimation().animationName.equals("disappear")) {
+                controller.setAnimation(new AnimationBuilder().addAnimation("disappear", ILoopType.EDefaultLoopTypes.HOLD_ON_LAST_FRAME));
             }
         } else {
             if (!controller.getCurrentAnimation().animationName.equals("show")) {
-                controller.setAnimation(SHOW);
-                return PlayState.CONTINUE;
+                controller.setAnimation(new AnimationBuilder().addAnimation("show", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
             }
         }
 

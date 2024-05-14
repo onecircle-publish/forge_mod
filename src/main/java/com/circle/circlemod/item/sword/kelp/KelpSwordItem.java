@@ -30,6 +30,7 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 
 import javax.annotation.Nullable;
@@ -67,7 +68,7 @@ public class KelpSwordItem extends SwordItem {
 
     @Override
     public UseAnim getUseAnimation(ItemStack pStack) {
-        return UseAnim.BLOCK;
+        return UseAnim.CROSSBOW;
     }
 
     @Override
@@ -97,10 +98,35 @@ public class KelpSwordItem extends SwordItem {
         ItemStack item = pPlayer.getItemInHand(pUsedHand);
 
         //父类中逻辑，不可食用则不会触发startingUsingItem，这里手动调用。
-        pPlayer.startUsingItem(pUsedHand);
-        // 使用技能
-        useAbilities(SwordAbilities.UseType.USE, item, pPlayer, null);
-        return super.use(pLevel, pPlayer, pUsedHand);
+//         使用技能
+//        useAbilities(SwordAbilities.UseType.USE, item, pPlayer, null);
+        if (hasShield(item)) {
+            shield(item, pPlayer);
+            pPlayer.startUsingItem(pUsedHand);
+            return InteractionResultHolder.consume(item);
+        } else {
+            return InteractionResultHolder.pass(item);
+        }
+    }
+
+    @Override
+    public void onUsingTick(ItemStack stack, LivingEntity player, int count) {
+        if (this.shieldEntity != null) {
+            Vec3 position = player.getPosition(1);
+            Vec3 shieldPosition = this.shieldEntity.getPosition(1);
+            this.shieldEntity.setIsShieldShow(true);
+            this.shieldEntity.move(MoverType.SELF, new Vec3(position.x - shieldPosition.x, position.y - shieldPosition.y, position.z
+                    - shieldPosition.z));
+        }
+        super.onUsingTick(stack, player, count);
+    }
+
+    @Override
+    public boolean useOnRelease(ItemStack pStack) {
+        if (this.shieldEntity != null) {
+            this.shieldEntity.setIsShieldShow(false);
+        }
+        return super.useOnRelease(pStack);
     }
 
     /**
@@ -163,7 +189,8 @@ public class KelpSwordItem extends SwordItem {
      * @param stack
      * @param type
      */
-    public void useAbilities(SwordAbilities.UseType type, ItemStack stack, Player player, @Nullable Entity attatchedEntity) {
+    public void useAbilities(SwordAbilities.UseType type, ItemStack stack, Player player, @Nullable Entity
+            attatchedEntity) {
         ListTag list = stack.getOrCreateTag().getList(ABILITI_NBT_KEY, Tag.TAG_STRING);
         HashMap<SwordAbilities.KelpSword, SwordAbilities.CustomAbility> allAbilities = SwordAbilities.KelpSword.getAbilities().getAbilityHashMap();
         list.forEach(tag -> {
@@ -179,7 +206,7 @@ public class KelpSwordItem extends SwordItem {
                         absorption(ability.getName(), stack, player, attatchedEntity);
                         break;
                     case SHIELD:
-                        shield(ability.getName(), stack, player);
+//                        shield(ability.getName(), stack, player);
                         break;
                     case REGENERATION:
                         regeneration(ability.getName());
@@ -224,26 +251,10 @@ public class KelpSwordItem extends SwordItem {
     /**
      * 护盾（use触发）
      */
-    public void shield(String name, ItemStack stack, Player pPlayer) {
-        CircleMod.LOGGER.debug(name);
-        if (pPlayer.level.isClientSide()) return;
-        if (shieldEntity == null || shieldEntity.level != pPlayer.level) {
-            shieldEntity = new ShieldEntity(ModEntities.SHIELD_ENTITY.get(), pPlayer.level);
-            shieldEntity.setBindLivingEntity(pPlayer);
-            pPlayer.level.addFreshEntity(shieldEntity);
-        } else {
-            if (shieldEntity.getBindLivingEntity() != pPlayer) {
-                shieldEntity.setBindLivingEntity(pPlayer);
-            }
-        }
-        if (shieldEntity.isRemoved()) {
-            pPlayer.level.addFreshEntity(shieldEntity);
-        }
-    }
+    public void shield(ItemStack stack, Player pPlayer) {
 
-    @Override
-    public boolean useOnRelease(ItemStack pStack) {
-        return super.useOnRelease(pStack);
+        this.shieldEntity = new ShieldEntity(ModEntities.SHIELD_ENTITY.get(), pPlayer.level);
+        pPlayer.level.addFreshEntity(this.shieldEntity);
     }
 
     /**
