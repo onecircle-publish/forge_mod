@@ -31,10 +31,8 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 
 import javax.annotation.Nullable;
-import java.security.DrbgParameters;
 import java.util.*;
 
 /**
@@ -252,9 +250,13 @@ public class KelpSwordItem extends SwordItem {
      * 护盾（use触发）
      */
     public void shield(ItemStack stack, Player pPlayer) {
-
+        if (this.shieldEntity != null && this.shieldEntity.isRemoved()) {
+            this.shieldEntity.revive();
+            return;
+        }
         this.shieldEntity = new ShieldEntity(ModEntities.SHIELD_ENTITY.get(), pPlayer.level);
         pPlayer.level.addFreshEntity(this.shieldEntity);
+
     }
 
     /**

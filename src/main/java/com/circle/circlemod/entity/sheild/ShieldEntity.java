@@ -1,6 +1,5 @@
 package com.circle.circlemod.entity.sheild;
 
-import com.circle.circlemod.CircleMod;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -38,7 +37,7 @@ public class ShieldEntity extends LivingEntity implements IAnimatable {
     public ShieldEntity(EntityType<? extends LivingEntity> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.noPhysics = true;
-
+        this.setNoGravity(true);
     }
 
     public static AttributeSupplier setAttributes() {
@@ -47,7 +46,6 @@ public class ShieldEntity extends LivingEntity implements IAnimatable {
 
     public void moveToBindLivingEntity(LivingEntity entity) {
         Vec3 position = entity.getPosition(1);
-        CircleMod.LOGGER.debug("positon x:{},y:{},z{}", position.x, position.y, position.z);
         this.move(MoverType.SELF, new Vec3(position.x - this.getX(), position.y - this.getY(), position.z - this.getZ()));
     }
 
@@ -189,15 +187,15 @@ public class ShieldEntity extends LivingEntity implements IAnimatable {
 
         if (currentAnimation != null && controller.getCurrentAnimation().animationName.equals("disappear") && !(controller.getAnimationState() == AnimationState.Running)) {
             controller.markNeedsReload();
+            this.remove(RemovalReason.KILLED);
+            return PlayState.STOP;
         }
 
         if (currentAnimation == null) {
-            controller.markNeedsReload();
             controller.setAnimation(new AnimationBuilder().addAnimation("show", ILoopType.EDefaultLoopTypes.HOLD_ON_LAST_FRAME));
             return PlayState.CONTINUE;
         }
         if (!getIsShieldShow()) {
-
             if (!currentAnimation.animationName.equals("disappear")) {
                 controller.setAnimation(new AnimationBuilder().addAnimation("disappear", ILoopType.EDefaultLoopTypes.HOLD_ON_LAST_FRAME));
             }
