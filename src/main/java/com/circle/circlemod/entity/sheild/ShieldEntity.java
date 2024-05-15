@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.builder.Animation;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.builder.ILoopType;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -37,6 +38,7 @@ public class ShieldEntity extends LivingEntity implements IAnimatable {
     public ShieldEntity(EntityType<? extends LivingEntity> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.noPhysics = true;
+
     }
 
     public static AttributeSupplier setAttributes() {
@@ -183,23 +185,24 @@ public class ShieldEntity extends LivingEntity implements IAnimatable {
      */
     public <E extends ShieldEntity> PlayState visibleAnimation(final AnimationEvent<E> event) {
         AnimationController<E> controller = event.getController();
+        Animation currentAnimation = controller.getCurrentAnimation();
 
-        if (controller.getCurrentAnimation() == null) {
+        if (currentAnimation != null && controller.getCurrentAnimation().animationName.equals("disappear") && !(controller.getAnimationState() == AnimationState.Running)) {
+            controller.markNeedsReload();
+        }
+
+        if (currentAnimation == null) {
             controller.markNeedsReload();
             controller.setAnimation(new AnimationBuilder().addAnimation("show", ILoopType.EDefaultLoopTypes.HOLD_ON_LAST_FRAME));
             return PlayState.CONTINUE;
         }
         if (!getIsShieldShow()) {
-            if (!(controller.getAnimationState() == AnimationState.Running)) {
-                controller.markNeedsReload();
-                return PlayState.STOP;
-            }
 
-            if (!controller.getCurrentAnimation().animationName.equals("disappear")) {
+            if (!currentAnimation.animationName.equals("disappear")) {
                 controller.setAnimation(new AnimationBuilder().addAnimation("disappear", ILoopType.EDefaultLoopTypes.HOLD_ON_LAST_FRAME));
             }
         } else {
-            if (!controller.getCurrentAnimation().animationName.equals("show")) {
+            if (!currentAnimation.animationName.equals("show")) {
                 controller.setAnimation(new AnimationBuilder().addAnimation("show", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
             }
         }
