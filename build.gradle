@@ -239,3 +239,6 @@ compileTestKotlin {
         jvmTarget = "17"
     }
 }
+
+//解决m1报错https://wiki.nova-committee.cn/books/34173/page/forge
+apply from: "https://moddingtutorials.org/applesilicon.gradle"
