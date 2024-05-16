@@ -13,6 +13,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Team;
 import net.minecraftforge.network.NetworkHooks;
@@ -45,11 +46,23 @@ public class ShieldEntity extends LivingEntity implements IAnimatable {
 
     @Override
     protected void doPush(Entity pEntity) {
+        if (pEntity instanceof Mob) {
+            pushEntityAway(pEntity);
+        }
+    }
 
+    private void pushEntityAway(Entity pEntity) {
+        // 计算从 ShieldEntity 到目标实体的方向向量
+        Vec3 direction = pEntity.position().subtract(this.position()).normalize();
+        double pushStrength = 5; // 你可以调整推力的强度
+
+        // 调整目标实体的位置
+        pEntity.setPos(pEntity.getX() + direction.x * pushStrength, pEntity.getY() + 0.1, pEntity.getZ() + direction.z * pushStrength);
     }
 
     @Override
     public void tick() {
+
         super.tick();
     }
 
@@ -176,7 +189,6 @@ public class ShieldEntity extends LivingEntity implements IAnimatable {
 
         if (currentAnimation != null && controller.getCurrentAnimation().animationName.equals("disappear") && !(controller.getAnimationState() == AnimationState.Running)) {
             controller.markNeedsReload();
-            controller.clearAnimationCache();
             this.remove(RemovalReason.KILLED);
             return PlayState.STOP;
         }
@@ -185,13 +197,13 @@ public class ShieldEntity extends LivingEntity implements IAnimatable {
             controller.setAnimation(new AnimationBuilder().addAnimation("show", ILoopType.EDefaultLoopTypes.HOLD_ON_LAST_FRAME));
             return PlayState.CONTINUE;
         }
-        if (!getIsShieldShow()) {
-            if (!currentAnimation.animationName.equals("disappear")) {
-                controller.setAnimation(new AnimationBuilder().addAnimation("disappear", ILoopType.EDefaultLoopTypes.HOLD_ON_LAST_FRAME));
+        if (getIsShieldShow()) {
+            if (!currentAnimation.animationName.equals("show")) {
+                controller.setAnimation(new AnimationBuilder().addAnimation("show", ILoopType.EDefaultLoopTypes.HOLD_ON_LAST_FRAME));
             }
         } else {
-            if (!currentAnimation.animationName.equals("show")) {
-                controller.setAnimation(new AnimationBuilder().addAnimation("show", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
+            if (!currentAnimation.animationName.equals("disappear")) {
+                controller.setAnimation(new AnimationBuilder().addAnimation("disappear", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
             }
         }
 
