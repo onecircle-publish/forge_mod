@@ -17,7 +17,6 @@ public class SwordAbilities {
         ENTANGLEMENT,//缠绕
         ABSORPTION,//水分吸收
         SHIELD,//护盾
-        REGENERATION,//再生
         FORCE_OF_TIDAL;//潮汐之力;//水之感知
 
         public static CustomAbility getAbilities() {
@@ -26,7 +25,6 @@ public class SwordAbilities {
             customAbility.setHashMap(KelpSword.ABSORPTION, UseType.CLICK, "水分吸收");
             customAbility.setHashMap(KelpSword.SHIELD, UseType.USE, "水之护盾");
             customAbility.setHashMap(KelpSword.FORCE_OF_TIDAL, UseType.CLICK, "潮汐之力");
-            customAbility.setHashMap(KelpSword.REGENERATION, UseType.USE, "水愈");
             return customAbility;
         }
 

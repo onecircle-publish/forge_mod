@@ -20,7 +20,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
@@ -40,9 +39,9 @@ import java.util.*;
  * @date 2024-05-07 15:12
  **/
 public class KelpSwordItem extends SwordItem {
-    public final int MAX_ABILITY_COUNT = 2;// 一次性产生的技能数量
-    public final int ENTANGLEMENT_TICKS = 20;
-    public final int ABSORPTION_TICKS = 20 * 2;
+    public final int MAX_ABILITY_COUNT = 1;// 一次性产生的技能数量
+    public final int ENTANGLEMENT_TICKS = 40;
+    public final int ABSORPTION_TICKS = 30 * 2;
     public static final String ABILITI_NBT_KEY = "KelpSwordAbilities";
     public ArrayList<SwordAbilities.CustomAbility> currentAbilities = null;
     public ShieldEntity shieldEntity = null;
@@ -111,10 +110,8 @@ public class KelpSwordItem extends SwordItem {
     public void onUsingTick(ItemStack stack, LivingEntity player, int count) {
         if (this.shieldEntity != null) {
             Vec3 position = player.getPosition(1);
-            Vec3 shieldPosition = this.shieldEntity.getPosition(1);
             this.shieldEntity.setIsShieldShow(true);
-            this.shieldEntity.move(MoverType.SELF, new Vec3(position.x - shieldPosition.x, position.y - shieldPosition.y, position.z
-                    - shieldPosition.z));
+            this.shieldEntity.setPos(position.x, position.y, position.z);
         }
         super.onUsingTick(stack, player, count);
     }
@@ -203,12 +200,6 @@ public class KelpSwordItem extends SwordItem {
                     case ABSORPTION:
                         absorption(ability.getName(), stack, player, attatchedEntity);
                         break;
-                    case SHIELD:
-//                        shield(ability.getName(), stack, player);
-                        break;
-                    case REGENERATION:
-                        regeneration(ability.getName());
-                        break;
                     case FORCE_OF_TIDAL:
                         if (attatchedEntity == null) return;
                         forceOfTidal(ability.getName(), stack, player, attatchedEntity);
@@ -255,8 +246,8 @@ public class KelpSwordItem extends SwordItem {
             return;
         }
         this.shieldEntity = new ShieldEntity(ModEntities.SHIELD_ENTITY.get(), pPlayer.level);
+        this.shieldEntity.setPos(pPlayer.position());
         pPlayer.level.addFreshEntity(this.shieldEntity);
-
     }
 
     /**

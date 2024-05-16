@@ -13,7 +13,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Team;
 import net.minecraftforge.network.NetworkHooks;
@@ -44,11 +43,6 @@ public class ShieldEntity extends LivingEntity implements IAnimatable {
         return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, 4).build();
     }
 
-    public void moveToBindLivingEntity(LivingEntity entity) {
-        Vec3 position = entity.getPosition(1);
-        this.move(MoverType.SELF, new Vec3(position.x - this.getX(), position.y - this.getY(), position.z - this.getZ()));
-    }
-
     @Override
     protected void doPush(Entity pEntity) {
 
@@ -65,11 +59,6 @@ public class ShieldEntity extends LivingEntity implements IAnimatable {
 
     public boolean getIsShieldShow() {
         return this.entityData.get(IS_SHOW);
-    }
-
-    @Override
-    public boolean isAlwaysTicking() {
-        return true;
     }
 
     @Override
@@ -187,6 +176,7 @@ public class ShieldEntity extends LivingEntity implements IAnimatable {
 
         if (currentAnimation != null && controller.getCurrentAnimation().animationName.equals("disappear") && !(controller.getAnimationState() == AnimationState.Running)) {
             controller.markNeedsReload();
+            controller.clearAnimationCache();
             this.remove(RemovalReason.KILLED);
             return PlayState.STOP;
         }
