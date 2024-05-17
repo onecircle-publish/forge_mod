@@ -44,7 +44,7 @@ public class KelpSwordItem extends SwordItem {
     public final int ABSORPTION_TICKS = 30 * 2;
     public static final String ABILITI_NBT_KEY = "KelpSwordAbilities";
     public ArrayList<SwordAbilities.CustomAbility> currentAbilities = null;
-    public ShieldEntity shieldEntity = null;
+//    public ShieldEntity shieldEntity = null;
 
     public KelpSwordItem(Tier pTier, int pAttackDamageModifier, float pAttackSpeedModifier, Properties pProperties) {
         super(pTier, pAttackDamageModifier, pAttackSpeedModifier, pProperties);
@@ -96,33 +96,35 @@ public class KelpSwordItem extends SwordItem {
 
         //父类中逻辑，不可食用则不会触发startingUsingItem，这里手动调用。
 //         使用技能
-//        useAbilities(SwordAbilities.UseType.USE, item, pPlayer, null);
-        if (hasShield(item)) {
-            shield(item, pPlayer);
-            pPlayer.startUsingItem(pUsedHand);
-            return InteractionResultHolder.consume(item);
-        } else {
-            return InteractionResultHolder.pass(item);
-        }
+        useAbilities(SwordAbilities.UseType.USE, item, pPlayer, null);
+//        if (hasShield(item)) {
+//            shield(item, pPlayer);
+//            pPlayer.startUsingItem(pUsedHand);
+//            return InteractionResultHolder.consume(item);
+//        } else {
+//            return InteractionResultHolder.pass(item);
+//        }
+
+        return InteractionResultHolder.pass(item);
     }
 
-    @Override
-    public void onUsingTick(ItemStack stack, LivingEntity player, int count) {
-        if (this.shieldEntity != null) {
-            Vec3 position = player.getPosition(1);
-            this.shieldEntity.setIsShieldShow(true);
-            this.shieldEntity.setPos(position.x, position.y, position.z);
-        }
-        super.onUsingTick(stack, player, count);
-    }
+//    @Override
+//    public void onUsingTick(ItemStack stack, LivingEntity player, int count) {
+//        if (this.shieldEntity != null) {
+//            Vec3 position = player.getPosition(1);
+//            this.shieldEntity.setIsShieldShow(true);
+//            this.shieldEntity.setPos(position.x, position.y, position.z);
+//        }
+//        super.onUsingTick(stack, player, count);
+//    }
 
-    @Override
-    public boolean useOnRelease(ItemStack pStack) {
-        if (this.shieldEntity != null) {
-            this.shieldEntity.setIsShieldShow(false);
-        }
-        return super.useOnRelease(pStack);
-    }
+//    @Override
+//    public boolean useOnRelease(ItemStack pStack) {
+//        if (this.shieldEntity != null) {
+//            this.shieldEntity.setIsShieldShow(false);
+//        }
+//        return super.useOnRelease(pStack);
+//    }
 
     /**
      * 添加技能tag
@@ -237,14 +239,14 @@ public class KelpSwordItem extends SwordItem {
         }
     }
 
-    /**
-     * 护盾（use触发）
-     */
-    public void shield(ItemStack stack, Player pPlayer) {
-        this.shieldEntity = new ShieldEntity(ModEntities.SHIELD_ENTITY.get(), pPlayer.level);
-        this.shieldEntity.moveTo(pPlayer.position());
-        pPlayer.level.addFreshEntity(this.shieldEntity);
-    }
+//    /**
+//     * 护盾（use触发）
+//     */
+//    public void shield(ItemStack stack, Player pPlayer) {
+//        this.shieldEntity = new ShieldEntity(ModEntities.SHIELD_ENTITY.get(), pPlayer.level);
+//        this.shieldEntity.moveTo(pPlayer.position());
+//        pPlayer.level.addFreshEntity(this.shieldEntity);
+//    }
 
     /**
      * 潮汐之力 （攻击触发）
@@ -263,9 +265,9 @@ public class KelpSwordItem extends SwordItem {
         }, 1500);
     }
 
-    public boolean hasShield(ItemStack stack) {
-        CompoundTag tag = stack.getOrCreateTag();
-        ListTag list = tag.getList(ABILITI_NBT_KEY, Tag.TAG_STRING);
-        return list.contains(StringTag.valueOf(SwordAbilities.KelpSword.SHIELD.toString()));
-    }
+//    public boolean hasShield(ItemStack stack) {
+//        CompoundTag tag = stack.getOrCreateTag();
+//        ListTag list = tag.getList(ABILITI_NBT_KEY, Tag.TAG_STRING);
+//        return list.contains(StringTag.valueOf(SwordAbilities.KelpSword.SHIELD.toString()));
+//    }
 }

@@ -37,7 +37,7 @@ public class ModEventBusEvents {
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntities.DOOM_MUSHROOM_ENTITY.get(), DoomMushroomEntityRenderer::new);
         event.registerEntityRenderer(ModEntities.CHARM_MUSHROOM_ENTITY.get(), CharmMushroomEntityRenderer::new);
-        event.registerEntityRenderer(ModEntities.SHIELD_ENTITY.get(), ShieldEntityRenderer::new);
+//        event.registerEntityRenderer(ModEntities.SHIELD_ENTITY.get(), ShieldEntityRenderer::new);
     }
 
     //注册模型贴图
@@ -50,6 +50,6 @@ public class ModEventBusEvents {
     // 加载实体attributes
     @SubscribeEvent
     public static void entityAttributeEvent(EntityAttributeCreationEvent event) {
-        event.put(ModEntities.SHIELD_ENTITY.get(), ShieldEntity.setAttributes());
+//        event.put(ModEntities.SHIELD_ENTITY.get(), ShieldEntity.setAttributes());
     }
 }

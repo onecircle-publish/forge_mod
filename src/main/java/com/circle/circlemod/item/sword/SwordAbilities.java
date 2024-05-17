@@ -16,14 +16,14 @@ public class SwordAbilities {
     public enum KelpSword {
         ENTANGLEMENT,//缠绕
         ABSORPTION,//水分吸收
-        SHIELD,//护盾
+        //        SHIELD,//护盾
         FORCE_OF_TIDAL;//潮汐之力;//水之感知
 
         public static CustomAbility getAbilities() {
             CustomAbility customAbility = new CustomAbility();
             customAbility.setHashMap(KelpSword.ENTANGLEMENT, UseType.CLICK, "缠绕");
             customAbility.setHashMap(KelpSword.ABSORPTION, UseType.CLICK, "水分吸收");
-            customAbility.setHashMap(KelpSword.SHIELD, UseType.USE, "水之护盾");
+//            customAbility.setHashMap(KelpSword.SHIELD, UseType.USE, "水之护盾");
             customAbility.setHashMap(KelpSword.FORCE_OF_TIDAL, UseType.CLICK, "潮汐之力");
             return customAbility;
         }
