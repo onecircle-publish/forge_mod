@@ -241,20 +241,9 @@ public class KelpSwordItem extends SwordItem {
      * 护盾（use触发）
      */
     public void shield(ItemStack stack, Player pPlayer) {
-        if (this.shieldEntity != null && this.shieldEntity.isRemoved()) {
-            this.shieldEntity.revive();
-            return;
-        }
         this.shieldEntity = new ShieldEntity(ModEntities.SHIELD_ENTITY.get(), pPlayer.level);
-        this.shieldEntity.setPos(pPlayer.position());
+        this.shieldEntity.moveTo(pPlayer.position());
         pPlayer.level.addFreshEntity(this.shieldEntity);
-    }
-
-    /**
-     * 再生（usingTick）
-     */
-    public void regeneration(String name) {
-        CircleMod.LOGGER.debug(name);
     }
 
     /**

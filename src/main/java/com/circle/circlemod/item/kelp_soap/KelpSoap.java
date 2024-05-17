@@ -11,13 +11,16 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeTier;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 /**
  * 海带香皂
@@ -90,6 +93,15 @@ public class KelpSoap extends TieredItem {
         if (!pLevel.isClientSide()) {
             for (double y = pPlayer.getY(); y < pPlayer.getY() + 2; y += 0.5) {  // 从玩家脚下到头部，每次增加 0.5 的高度
                 ((ServerLevel) pLevel).sendParticles(ParticleTypes.BUBBLE, pPlayer.getX(), y, pPlayer.getZ(), 10, 0.2, 0.2, 0.2, 0.1);
+            }
+        }
+        Collection<MobEffectInstance> activeEffects = pPlayer.getActiveEffects();
+        // 如果存在效果，随机移除一个
+        if (!activeEffects.isEmpty()) {
+            int indexToRemove = new Random().nextInt(activeEffects.size());
+            MobEffectInstance effectToRemove = activeEffects.stream().skip(indexToRemove).findFirst().orElse(null);
+            if (effectToRemove != null) {
+                pPlayer.removeEffect(effectToRemove.getEffect());
             }
         }
         pPlayer.playSound(SoundEvents.AMBIENT_UNDERWATER_LOOP_ADDITIONS, 1F, 1F);
