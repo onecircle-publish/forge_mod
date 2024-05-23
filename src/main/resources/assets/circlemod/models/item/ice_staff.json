@@ -1,0 +1,57 @@
+{
+	"credit": "Made with Blockbench",
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "circlemod:item/ice_staff",
+		"particle": "circlemod:item/ice_staff"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 0],
+			"faces": {
+				"north": {"uv": [-0.5, 0, 16, 16], "texture": "#0"},
+				"east": {"uv": [0, 0, 0, 11], "texture": "#0"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#0"},
+				"west": {"uv": [0, 0, 0, 11], "texture": "#0"},
+				"up": {"uv": [0, 0, 14.5, 0], "texture": "#0"},
+				"down": {"uv": [0, 0, 14.5, 0], "texture": "#0"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"translation": [0, 7.25, 17],
+			"scale": [2, 2, 2]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [21.5, 0, 0],
+			"translation": [0, 4.5, 11.75],
+			"scale": [2, 2, 1]
+		},
+		"firstperson_righthand": {
+			"rotation": [-23.79, -3.39, 7.83],
+			"translation": [3, 7.25, 5],
+			"scale": [2, 2, 1]
+		},
+		"firstperson_lefthand": {
+			"rotation": [-26, -3, 5],
+			"translation": [2, 7.25, 6.25],
+			"scale": [2, 2, 1]
+		},
+		"ground": {
+			"translation": [0, 3.75, 7.25]
+		},
+		"gui": {
+			"rotation": [0, 0, -0.25],
+			"scale": [0.8, 0.8, 1]
+		},
+		"head": {
+			"translation": [0, 13, 1.5]
+		},
+		"fixed": {
+			"rotation": [-2.75, 0, 0],
+			"translation": [0, 0, 8.25]
+		}
+	}
+}
