@@ -24,7 +24,7 @@ public class Ice extends ThrowableItemProjectile {
 
     @Override
     protected Item getDefaultItem() {
-        return ModItems.KELP_SWORD.get();
+        return ModItems.ICE_SPIKE.get();
     }
 
     @Override
