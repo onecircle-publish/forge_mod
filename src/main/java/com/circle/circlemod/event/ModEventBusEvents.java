@@ -8,18 +8,15 @@ import com.circle.circlemod.entity.charm.CharmMushroomModel;
 import com.circle.circlemod.entity.doom.DoomMushroomEntity;
 import com.circle.circlemod.entity.doom.DoomMushroomEntityRenderer;
 import com.circle.circlemod.entity.doom.DoomMushroomModel;
-import com.circle.circlemod.entity.sheild.ShieldEntity;
-import com.circle.circlemod.entity.sheild.ShieldEntityRenderer;
+import com.circle.circlemod.entity.projectile.ice.IceRenderer;
 import com.circle.circlemod.paticle.charm.CharmParticle;
 import com.circle.circlemod.paticle.doom.DoomParticle;
 import com.circle.circlemod.paticle.freeze.FreezeParticle;
 import com.circle.circlemod.paticle.ModParticles;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -37,6 +34,7 @@ public class ModEventBusEvents {
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntities.DOOM_MUSHROOM_ENTITY.get(), DoomMushroomEntityRenderer::new);
         event.registerEntityRenderer(ModEntities.CHARM_MUSHROOM_ENTITY.get(), CharmMushroomEntityRenderer::new);
+        event.registerEntityRenderer(ModEntities.ICE.get(), IceRenderer::new);
 //        event.registerEntityRenderer(ModEntities.SHIELD_ENTITY.get(), ShieldEntityRenderer::new);
     }
 

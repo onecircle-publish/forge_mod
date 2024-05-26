@@ -1,10 +1,11 @@
 package com.circle.circlemod.item.staff;
 
+import com.circle.circlemod.entity.ModEntities;
+import com.circle.circlemod.entity.projectile.ice.Ice;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 
@@ -48,12 +49,10 @@ public class IceStaff extends ProjectileWeaponItem {
         Player player = (Player) pLivingEntity;
         player.stopUsingItem();
         if (!pLevel.isClientSide) {
-            ArrowItem arrowitem = (ArrowItem) Items.ARROW;
-            AbstractArrow abstractarrow = arrowitem.createArrow(pLevel, pStack, player);
-            abstractarrow.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 3.0F, 1.0F);
-            abstractarrow.setCritArrow(true);
+            Ice ice = createArrow(pLevel, pStack, player);
 
-            pLevel.addFreshEntity(abstractarrow);
+            ice.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 3.0F, 1.0F);
+            pLevel.addFreshEntity(ice);
         }
         super.releaseUsing(pStack, pLevel, pLivingEntity, pTimeCharged);
     }
@@ -62,5 +61,10 @@ public class IceStaff extends ProjectileWeaponItem {
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
         pPlayer.startUsingItem(InteractionHand.MAIN_HAND);
         return InteractionResultHolder.consume(pPlayer.getItemInHand(pUsedHand));
+    }
+
+    public Ice createArrow(Level level, ItemStack stack, LivingEntity shooter) {
+        Ice ice = new Ice(ModEntities.ICE.get(), shooter, level);
+        return ice;
     }
 }
