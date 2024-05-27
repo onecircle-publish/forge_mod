@@ -1,12 +1,16 @@
 package com.circle.circlemod.entity.projectile.ice;
 
 import com.circle.circlemod.item.ModItems;
+import com.circle.circlemod.item.staff.IceStaff;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 
 public class Ice extends ThrowableItemProjectile {
@@ -14,13 +18,15 @@ public class Ice extends ThrowableItemProjectile {
         super(pEntityType, pLevel);
     }
 
-    public Ice(EntityType<? extends ThrowableItemProjectile> pEntityType, double pX, double pY, double pZ, Level pLevel) {
-        super(pEntityType, pX, pY, pZ, pLevel);
-    }
-
     public Ice(EntityType<? extends ThrowableItemProjectile> pEntityType, LivingEntity pShooter, Level pLevel) {
         super(pEntityType, pShooter, pLevel);
     }
+
+    public Ice(EntityType<? extends ThrowableItemProjectile> pEntityType, LivingEntity pShooter, Level pLevel, Vec3 offset) {
+        this(pEntityType, pShooter, pLevel);
+        this.setPos(pShooter.getX() + offset.x, pShooter.getY() + getY() + offset.y, pShooter.getZ() + offset.z);
+    }
+
 
     @Override
     protected Item getDefaultItem() {
@@ -35,5 +41,14 @@ public class Ice extends ThrowableItemProjectile {
     @Override
     public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
+    }
+
+    @Override
+    protected void onHitEntity(EntityHitResult pResult) {
+        Level level = pResult.getEntity().level;
+        pResult.getEntity().hurt(DamageSource.FREEZE, 4);
+        pResult.getEntity().remove(RemovalReason.KILLED);
+        //播放破碎粒子
+        super.onHitEntity(pResult);
     }
 }

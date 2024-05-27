@@ -8,13 +8,20 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
+import java.util.ArrayList;
 import java.util.function.Predicate;
 
 /**
  * 水晶权杖
  */
 public class IceStaff extends ProjectileWeaponItem {
+    public static final Vec3 LEFT = new Vec3(0, 0, 0);
+    public static final Vec3 RIGHT = new Vec3(0, 0, 0);
+    public static final Vec3 TOP = new Vec3(0, 0, 0);
+    public static final Vec3 BOTTOM = new Vec3(0, 0, 0);
+
     public IceStaff(Properties pProperties) {
         super(pProperties);
     }
@@ -49,10 +56,12 @@ public class IceStaff extends ProjectileWeaponItem {
         Player player = (Player) pLivingEntity;
         player.stopUsingItem();
         if (!pLevel.isClientSide) {
-            Ice ice = createArrow(pLevel, pStack, player);
+            ArrayList<Ice> ices = createArrow(pLevel, pStack, player);
 
-            ice.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 3.0F, 1.0F);
-            pLevel.addFreshEntity(ice);
+            ices.forEach((ice) -> {
+                ice.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 3.0F, 1.0F);
+                pLevel.addFreshEntity(ice);
+            });
         }
         super.releaseUsing(pStack, pLevel, pLivingEntity, pTimeCharged);
     }
@@ -63,8 +72,12 @@ public class IceStaff extends ProjectileWeaponItem {
         return InteractionResultHolder.consume(pPlayer.getItemInHand(pUsedHand));
     }
 
-    public Ice createArrow(Level level, ItemStack stack, LivingEntity shooter) {
-        Ice ice = new Ice(ModEntities.ICE.get(), shooter, level);
-        return ice;
+    public ArrayList<Ice> createArrow(Level level, ItemStack stack, LivingEntity shooter) {
+        ArrayList<Ice> ices = new ArrayList<>();
+        ices.add(new Ice(ModEntities.ICE.get(), shooter, level, LEFT));
+        ices.add(new Ice(ModEntities.ICE.get(), shooter, level, RIGHT));
+        ices.add(new Ice(ModEntities.ICE.get(), shooter, level, TOP));
+        ices.add(new Ice(ModEntities.ICE.get(), shooter, level, BOTTOM));
+        return ices;
     }
 }
