@@ -1,7 +1,6 @@
 package com.circle.circlemod.entity.projectile.ice;
 
 import com.circle.circlemod.item.ModItems;
-import com.circle.circlemod.item.staff.IceStaff;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -24,7 +23,7 @@ public class Ice extends ThrowableItemProjectile {
 
     public Ice(EntityType<? extends ThrowableItemProjectile> pEntityType, LivingEntity pShooter, Level pLevel, Vec3 offset) {
         this(pEntityType, pShooter, pLevel);
-        this.setPos(pShooter.getX() + offset.x, pShooter.getY() + getY() + offset.y, pShooter.getZ() + offset.z);
+        this.setPos(pShooter.getX() + offset.x, pShooter.getEyeY() + 0.1d + offset.y, pShooter.getZ() + offset.z);
     }
 
 
@@ -47,7 +46,7 @@ public class Ice extends ThrowableItemProjectile {
     protected void onHitEntity(EntityHitResult pResult) {
         Level level = pResult.getEntity().level;
         pResult.getEntity().hurt(DamageSource.FREEZE, 4);
-        pResult.getEntity().remove(RemovalReason.KILLED);
+        this.remove(RemovalReason.KILLED);
         //播放破碎粒子
         super.onHitEntity(pResult);
     }
