@@ -21,7 +21,6 @@ import software.bernie.geckolib3.GeckoLib;
 @Mod(CircleMod.MOD_ID)
 public class CircleMod {
     public static final Logger LOGGER = LogUtils.getLogger();
-
     public static final String MOD_ID = "circlemod";
 
     public CircleMod() {
