@@ -2,14 +2,17 @@ package com.circle.circlemod.item.staff;
 
 import com.circle.circlemod.entity.ModEntities;
 import com.circle.circlemod.entity.projectile.ice.Ice;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.function.Predicate;
 
@@ -57,11 +60,8 @@ public class IceStaff extends ProjectileWeaponItem {
         player.stopUsingItem();
         if (!pLevel.isClientSide) {
             ArrayList<Ice> ices = createArrow(pLevel, pStack, player);
-
-            ices.forEach((ice) -> {
-                ice.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 3.0F, 1.0F);
-                pLevel.addFreshEntity(ice);
-            });
+            LivingEntity entityPlayerFacing = getEntityPlayerFacing();
+            shootIce(ices, pLevel, player, entityPlayerFacing);
         }
         super.releaseUsing(pStack, pLevel, pLivingEntity, pTimeCharged);
     }
@@ -79,5 +79,28 @@ public class IceStaff extends ProjectileWeaponItem {
         ices.add(new Ice(ModEntities.ICE.get(), shooter, level, TOP));
         ices.add(new Ice(ModEntities.ICE.get(), shooter, level, BOTTOM));
         return ices;
+    }
+
+    public LivingEntity getEntityPlayerFacing() {
+        Entity entity = Minecraft.getInstance().crosshairPickEntity;
+        if (entity instanceof LivingEntity) {
+            return (LivingEntity) entity;
+        }
+        return null;
+    }
+
+    public void shootIce(ArrayList<Ice> ices, Level pLevel, Player player, @Nullable LivingEntity targetEntity) {
+        if (targetEntity == null) {
+            ices.forEach((ice) -> {
+                ice.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.8F, 1.0F);
+                pLevel.addFreshEntity(ice);
+            });
+        } else {
+            // 目标不为null的情况
+//            ices.forEach((ice) -> {
+//                ice.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.8F, 1.0F);
+//                pLevel.addFreshEntity(ice);
+//            });
+        }
     }
 }
