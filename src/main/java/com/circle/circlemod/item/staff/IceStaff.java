@@ -25,8 +25,20 @@ public class IceStaff extends ProjectileWeaponItem {
     public static final Vec3 TOP = new Vec3(0, 0, 0);
     public static final Vec3 BOTTOM = new Vec3(0, 0, 0);
 
+    public static final int LEVEL_1_TICK = 0;
+    public static final int LEVEL_2_TICK = 40;
+    public static final int LEVEL_3_TICK = 100;
+
+    public SHOOT_LEVEL currentShootLevel = null;
+
+    public enum SHOOT_LEVEL {
+        LEVEL_1, LEVEL_2, LEVEL_3
+    }
+
+
     public IceStaff(Properties pProperties) {
         super(pProperties);
+        resetShootLevel();
     }
 
     @Override
@@ -52,19 +64,22 @@ public class IceStaff extends ProjectileWeaponItem {
     @Override
     public void onUsingTick(ItemStack stack, LivingEntity player, int count) {
         super.onUsingTick(stack, player, count);
+        setShootLevel(count);
     }
 
     @Override
     public void releaseUsing(ItemStack pStack, Level pLevel, LivingEntity pLivingEntity, int pTimeCharged) {
         Player player = (Player) pLivingEntity;
         player.stopUsingItem();
+
         if (!pLevel.isClientSide) {
-            ArrayList<Ice> ices = createArrow(pLevel, pStack, player);
-            LivingEntity entityPlayerFacing = getEntityPlayerFacing();
-            shootIce(ices, pLevel, player, entityPlayerFacing);
+            shootByLevel(pLevel, pStack, player);
+            resetShootLevel();
         }
+
         super.releaseUsing(pStack, pLevel, pLivingEntity, pTimeCharged);
     }
+
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
@@ -89,6 +104,35 @@ public class IceStaff extends ProjectileWeaponItem {
         return null;
     }
 
+    /**
+     * 根据不同发射等级选择不同的释放方式
+     *
+     * @param pLevel
+     * @param pStack
+     * @param player
+     */
+    public void shootByLevel(Level pLevel, ItemStack pStack, Player player) {
+        if (this.currentShootLevel == SHOOT_LEVEL.LEVEL_1) {
+            ArrayList<Ice> ices = createArrow(pLevel, pStack, player);
+            LivingEntity entityPlayerFacing = getEntityPlayerFacing();
+            shootIce(ices, pLevel, player, entityPlayerFacing);
+        } else if (this.currentShootLevel == SHOOT_LEVEL.LEVEL_2) {
+
+        } else if (this.currentShootLevel == SHOOT_LEVEL.LEVEL_3) {
+            
+        }
+
+
+    }
+
+    /**
+     * LEVEL_1 发射子弹
+     *
+     * @param ices
+     * @param pLevel
+     * @param player
+     * @param targetEntity
+     */
     public void shootIce(ArrayList<Ice> ices, Level pLevel, Player player, @Nullable LivingEntity targetEntity) {
         if (targetEntity == null) {
             ices.forEach((ice) -> {
@@ -103,4 +147,19 @@ public class IceStaff extends ProjectileWeaponItem {
 //            });
         }
     }
+
+    public void setShootLevel(int ticks) {
+        if (ticks > LEVEL_3_TICK) {
+            currentShootLevel = SHOOT_LEVEL.LEVEL_3;
+        } else if (ticks > LEVEL_2_TICK) {
+            currentShootLevel = SHOOT_LEVEL.LEVEL_2;
+        } else if (ticks > LEVEL_1_TICK) {
+            currentShootLevel = SHOOT_LEVEL.LEVEL_1;
+        }
+    }
+
+    public void resetShootLevel() {
+        currentShootLevel = SHOOT_LEVEL.LEVEL_1;
+    }
+
 }
