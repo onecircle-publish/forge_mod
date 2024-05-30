@@ -1,14 +1,10 @@
 package com.circle.circlemod.item.staff;
 
-import com.circle.circlemod.CircleMod;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.RangedBowAttackGoal;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.monster.Skeleton;
+import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
@@ -51,7 +47,13 @@ public class IceStaff extends ProjectileWeaponItem {
 
     @Override
     public ItemStack finishUsingItem(ItemStack pStack, Level pLevel, LivingEntity pLivingEntity) {
-        doMagic();
+        if (!pLevel.isClientSide) {
+            Entity entity = pLevel.getEntity((interactiveTarget == null) ? -1 : interactiveTarget.getId());
+            if (entity != null) {
+                doMagic(entity);
+            }
+
+        }
         this.interactiveTarget = null;
         return super.finishUsingItem(pStack, pLevel, pLivingEntity);
     }
@@ -64,24 +66,13 @@ public class IceStaff extends ProjectileWeaponItem {
 
     @Override
     public boolean useOnRelease(ItemStack pStack) {
-
         return super.useOnRelease(pStack);
     }
 
-    /**
-     * 获取准心所指实体
-     *
-     * @return
-     */
-    public Entity getEntityCrosshairPick() {
-        return Minecraft.getInstance().crosshairPickEntity;
-    }
 
-    public void doMagic() {
-        Entity entityCrosshairPick = getEntityCrosshairPick();
-
-        if (entityCrosshairPick instanceof LivingEntity) {
-            magicToLivingEntity((LivingEntity) entityCrosshairPick);
+    public void doMagic(Entity entity) {
+        if (entity instanceof LivingEntity) {
+            magicToLivingEntity((LivingEntity) entity);
         }
     }
 
@@ -96,6 +87,7 @@ public class IceStaff extends ProjectileWeaponItem {
                 allItems.add(item);
             }
         });
+
         // 随机丢弃一个物品
         if (!allItems.isEmpty()) {
             ItemStack randomItem = allItems.get(new Random().nextInt(allItems.size()));
@@ -103,16 +95,9 @@ public class IceStaff extends ProjectileWeaponItem {
             if (this.interactiveTarget != null) {
                 ItemEntity itemEntity = interactiveTarget.spawnAtLocation(randomItem, 0);
                 Vec3 lookAngle = entity.getLookAngle();
-                itemEntity.setDeltaMovement(new Vec3(lookAngle.x, lookAngle.y, lookAngle.z));
-
-//                if (entity instanceof Mob) {
-//                    ((Mob) entity).goalSelector.getAvailableGoals().forEach(goal -> {
-//                        Goal currentGoal = goal.getGoal();
-//                        if (currentGoal instanceof RangedBowAttackGoal<?>) {
-//                            ((Mob) entity).goalSelector.removeGoal(goal);
-//                        }
-//                    });
-//                }
+                if (itemEntity != null) {
+                    itemEntity.setDeltaMovement(new Vec3(lookAngle.x, lookAngle.y, lookAngle.z));
+                }
 
                 SlotAccess mainHand = entity.getSlot(EquipmentSlot.MAINHAND.getIndex() + LivingEntity.EQUIPMENT_SLOT_OFFSET);
                 SlotAccess offHand = entity.getSlot(EquipmentSlot.OFFHAND.getIndex() + LivingEntity.EQUIPMENT_SLOT_OFFSET);
@@ -123,6 +108,11 @@ public class IceStaff extends ProjectileWeaponItem {
                 if (offHand.get().is(randomItem.getItem())) {
                     entity.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
                     entity.swing(InteractionHand.OFF_HAND);
+                }
+
+                if (entity instanceof AbstractSkeleton) {
+                    AbstractSkeleton skeleton = (AbstractSkeleton) entity;
+                    skeleton.reassessWeaponGoal();
                 }
             }
         }
