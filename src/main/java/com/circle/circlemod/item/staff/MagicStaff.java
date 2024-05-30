@@ -3,20 +3,18 @@ package com.circle.circlemod.item.staff;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.monster.AbstractSkeleton;
-import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -78,6 +76,7 @@ public class MagicStaff extends ProjectileWeaponItem {
 
     @Override
     public void onUsingTick(ItemStack stack, LivingEntity player, int count) {
+        if (interactiveTarget == null) player.releaseUsingItem();
         super.onUsingTick(stack, player, count);
     }
 
@@ -128,24 +127,8 @@ public class MagicStaff extends ProjectileWeaponItem {
      * @return
      */
     public void doSpecialLogic(LivingEntity entity) throws IllegalAccessException {
-        // 骷髅僵尸特殊逻辑
-        if (entity instanceof AbstractSkeleton skeleton) {
-            skeleton.reassessWeaponGoal();
-            return;
-        }
-
-        // 苦力怕 - 丢出TNT
-        if (entity instanceof Creeper) {
-            dropItem(Items.TNT.getDefaultInstance(), entity);
-            return;
-        }
-
-        // 末影人
-        if (entity instanceof EnderMan) {
-            EnderMan enderMan = (EnderMan) entity;
-            dropItem(enderMan.getCarriedBlock().getBlock().asItem().getDefaultInstance(), enderMan);
-            enderMan.setCarriedBlock(null);
-            return;
+        if (entity instanceof Monster) {
+            MagicStaffMagics.monsters((Monster) entity);
         }
 
         if (entity instanceof Animal) {
@@ -203,11 +186,15 @@ public class MagicStaff extends ProjectileWeaponItem {
      * 丢弃物品
      */
     public static void dropItem(ItemStack item, Entity entity) {
-        ItemEntity itemEntity = entity.spawnAtLocation(item);
-        Vec3 lookAngle = entity.getLookAngle();
-        if (itemEntity != null) {
-            itemEntity.setDeltaMovement(new Vec3(lookAngle.x, lookAngle.y, lookAngle.z));
-        }
+        Random random = new Random();
+        ItemEntity itemEntity = new ItemEntity(entity.level, entity.getX(), entity.getY(), entity.getZ(), item);
+
+        itemEntity.setPickUpDelay(40);
+        float f = random.nextFloat() * 0.8F;
+        float f1 = random.nextFloat() * ((float) Math.PI * 2F);
+        itemEntity.setDeltaMovement((double) (-Mth.sin(f1) * f), (double) 0.2F, (double) (Mth.cos(f1) * f));
+
+        entity.level.addFreshEntity(itemEntity);
     }
 
     public void setInteractiveTarget(Entity entity) {
