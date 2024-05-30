@@ -97,7 +97,7 @@ public class MagicStaff extends ProjectileWeaponItem {
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
 
-        pTooltipComponents.add(new TranslatableComponent("item.circlemod.magic_staff.text").withStyle(ChatFormatting.BOLD));
+        pTooltipComponents.add(new TranslatableComponent("item.circlemod.magic_staff.text").withStyle(ChatFormatting.YELLOW).withStyle(ChatFormatting.BOLD));
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
     }
 
