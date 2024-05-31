@@ -97,6 +97,7 @@ public class MagicStaffMagics {
             ArrayList<Item> items = new ArrayList<>();
             items.add(Items.CHICKEN);
             items.add(Items.EGG);
+            items.add(Items.FEATHER);
 
             Item item = items.get(new Random().nextInt(items.size()));
             MagicStaff.dropItem(item.getDefaultInstance(), entity);
