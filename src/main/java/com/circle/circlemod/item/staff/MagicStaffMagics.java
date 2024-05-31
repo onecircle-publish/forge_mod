@@ -1,30 +1,27 @@
 package com.circle.circlemod.item.staff;
 
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Chicken;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.animal.Sheep;
-import net.minecraft.world.entity.monster.AbstractSkeleton;
-import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.monster.EnderMan;
-import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.world.entity.monster.*;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Supplier;
 
 public class MagicStaffMagics {
     public static void monsters(Monster entity) {
-        // 骷髅僵尸特殊逻辑
+        // 骷髅僵尸特殊逻辑 - 丢弃弓，取消射击AI
         if (entity instanceof AbstractSkeleton skeleton) {
             skeleton.reassessWeaponGoal();
             return;
@@ -59,19 +56,33 @@ public class MagicStaffMagics {
             return;
         }
 
-        // 末影人
+        // 末影人 - 丢弃手中的方块
         if (entity instanceof EnderMan) {
             EnderMan enderMan = (EnderMan) entity;
             MagicStaff.dropItem(enderMan.getCarriedBlock().getBlock().asItem().getDefaultInstance(), enderMan);
             enderMan.setCarriedBlock(null);
             return;
         }
+
+        // 蜘蛛 - 丢弃蜘蛛丝
+        if (entity instanceof Spider) {
+            MagicStaff.dropItem(Items.STRING.getDefaultInstance(), entity);
+        }
+
+        // 女巫 - 随机丢弃药水
+        if (entity instanceof Witch) {
+            List<Map.Entry<ResourceKey<Potion>, Potion>> entries = ForgeRegistries.POTIONS.getEntries().stream().toList();
+            int index = new Random().nextInt(entries.size());
+            Potion potion = entries.get(index).getValue();
+            ItemStack itemStack = Items.POTION.getDefaultInstance();
+            ItemStack potionItem = PotionUtils.setPotion(itemStack, potion);
+            MagicStaff.dropItem(potionItem, entity);
+
+        }
     }
 
     public static void animals(LivingEntity entity) {
-
-
-        // 羊
+        // 羊 - 丢出羊毛
         if (entity instanceof Sheep sheep) {
             DyeColor color = sheep.getColor();
 
@@ -81,7 +92,7 @@ public class MagicStaffMagics {
             return;
         }
 
-        // 鸡
+        // 鸡 - 丢出鸡蛋、鸡腿...
         if (entity instanceof Chicken) {
             ArrayList<Item> items = new ArrayList<>();
             items.add(Items.CHICKEN);
@@ -92,6 +103,7 @@ public class MagicStaffMagics {
             return;
         }
 
+        // 如果没有特殊动物逻辑，则丢弃动物的生成蛋
         Iterable<SpawnEggItem> eggs = SpawnEggItem.eggs();
         for (SpawnEggItem egg : eggs) {
             EntityType<?> entityType = ObfuscationReflectionHelper.getPrivateValue(SpawnEggItem.class, egg, "defaultType");
@@ -99,5 +111,14 @@ public class MagicStaffMagics {
                 MagicStaff.dropItem(egg.getDefaultInstance(), entity);
             }
         }
+    }
+
+
+    /**
+     * 铁傀儡
+     * 丢出铁锭
+     */
+    public static void ironGolem(IronGolem ironGolem) {
+        MagicStaff.dropItem(Items.IRON_INGOT.getDefaultInstance(), ironGolem);
     }
 }

@@ -7,8 +7,10 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -107,6 +109,8 @@ public class MagicStaff extends ProjectileWeaponItem {
     }
 
     public void magicToLivingEntity(LivingEntity entity) {
+        entity.hurt(DamageSource.MAGIC, 2);
+
         try {
             doSpecialLogic(entity);
         } catch (IllegalAccessException e) {
@@ -133,6 +137,11 @@ public class MagicStaff extends ProjectileWeaponItem {
 
         if (entity instanceof Animal) {
             MagicStaffMagics.animals(entity);
+        }
+
+
+        if (entity instanceof IronGolem ironGolem) {
+            MagicStaffMagics.ironGolem(ironGolem);
         }
     }
 
