@@ -12,6 +12,7 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -60,8 +61,11 @@ public class MagicStaffMagics {
         // 末影人 - 丢弃手中的方块
         if (entity instanceof EnderMan) {
             EnderMan enderMan = (EnderMan) entity;
-            MagicStaff.dropItem(enderMan.getCarriedBlock().getBlock().asItem().getDefaultInstance(), enderMan);
-            enderMan.setCarriedBlock(null);
+            BlockState carriedBlock = enderMan.getCarriedBlock();
+            if (carriedBlock != null) {
+                MagicStaff.dropItem(enderMan.getCarriedBlock().getBlock().asItem().getDefaultInstance(), enderMan);
+                enderMan.setCarriedBlock(null);
+            }
             return;
         }
 
