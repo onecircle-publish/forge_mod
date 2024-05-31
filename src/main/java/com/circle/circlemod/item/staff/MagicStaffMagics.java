@@ -5,6 +5,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Chicken;
 import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.entity.monster.*;
 import net.minecraft.world.item.*;
@@ -38,7 +39,7 @@ public class MagicStaffMagics {
                     });
                     add(() -> {
                         // 执行爆炸逻辑
-                        Method explodeCreeper = ObfuscationReflectionHelper.findMethod(Creeper.class, "explodeCreeper");
+                        Method explodeCreeper = ObfuscationReflectionHelper.findMethod(Creeper.class, "m_32315_"); //explodeCreeper
                         explodeCreeper.setAccessible(true);
                         try {
                             explodeCreeper.invoke(creeper);
@@ -77,7 +78,6 @@ public class MagicStaffMagics {
             ItemStack itemStack = Items.POTION.getDefaultInstance();
             ItemStack potionItem = PotionUtils.setPotion(itemStack, potion);
             MagicStaff.dropItem(potionItem, entity);
-
         }
     }
 
@@ -86,7 +86,7 @@ public class MagicStaffMagics {
         if (entity instanceof Sheep sheep) {
             DyeColor color = sheep.getColor();
 
-            Map<DyeColor, ItemLike> itemByDye = ObfuscationReflectionHelper.getPrivateValue(Sheep.class, sheep, "ITEM_BY_DYE");
+            Map<DyeColor, ItemLike> itemByDye = ObfuscationReflectionHelper.getPrivateValue(Sheep.class, sheep, "f_29800_");//ITEM_BY_DYE
             ItemLike itemLike = itemByDye.get(color);
             MagicStaff.dropItem(itemLike.asItem().getDefaultInstance(), entity);
             return;
@@ -103,16 +103,28 @@ public class MagicStaffMagics {
             return;
         }
 
+        if (entity instanceof Pig) {
+            ArrayList<Item> items = new ArrayList<>();
+            if (entity.isOnFire()) {
+                items.add(Items.COOKED_PORKCHOP);
+            } else {
+                items.add(Items.PORKCHOP);
+            }
+
+            Item item = items.get(new Random().nextInt(items.size()));
+            MagicStaff.dropItem(item.getDefaultInstance(), entity);
+            return;
+        }
+
         // 如果没有特殊动物逻辑，则丢弃动物的生成蛋
         Iterable<SpawnEggItem> eggs = SpawnEggItem.eggs();
         for (SpawnEggItem egg : eggs) {
-            EntityType<?> entityType = ObfuscationReflectionHelper.getPrivateValue(SpawnEggItem.class, egg, "defaultType");
+            EntityType<?> entityType = egg.getType(null);
             if (entityType.equals(entity.getType())) {
                 MagicStaff.dropItem(egg.getDefaultInstance(), entity);
             }
         }
     }
-
 
     /**
      * 铁傀儡
