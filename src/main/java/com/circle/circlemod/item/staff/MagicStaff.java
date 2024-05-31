@@ -109,7 +109,7 @@ public class MagicStaff extends ProjectileWeaponItem {
     }
 
     public void magicToLivingEntity(LivingEntity entity) {
-        entity.hurt(DamageSource.MAGIC, 2);
+        entity.hurt(DamageSource.MAGIC, 1f);
 
         try {
             doSpecialLogic(entity);
