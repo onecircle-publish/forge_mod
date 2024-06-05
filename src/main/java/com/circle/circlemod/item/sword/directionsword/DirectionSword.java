@@ -1,13 +1,18 @@
 package com.circle.circlemod.item.sword.directionsword;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
@@ -20,23 +25,40 @@ public class DirectionSword extends SwordItem {
         super(pTier, pAttackDamageModifier, pAttackSpeedModifier, pProperties);
     }
 
+    @Override
+    public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
+        return super.onLeftClickEntity(stack, player, entity);
+    }
+
     /**
      * 攻击后方
      */
-    public void useDirectionHurt(ItemStack useItem, Player attacker, LivingEntity target) {
-        if (!attacker.level.isClientSide) {
+    public void useDirectionHurt(Level level, ItemStack useItem, Player attacker) {
+        if (!level.isClientSide) {
             double attackRange = attacker.getAttackRange();
-            AABB aabb = new AABB(new BlockPos(attacker.getBlockX(), attacker.getBlockY(), attacker.getBlockZ()));
-            List<LivingEntity> livingEntities = attacker.level.getEntitiesOfClass(LivingEntity.class, aabb);
-            livingEntities.forEach(livingEntity -> {
-                double v = livingEntity.getPosition(1).distanceTo(attacker.getPosition(1));
-                if (v < attackRange) {
-                    useItem.hurtEnemy(livingEntity, attacker);
-                }
-            });
+            List<Entity> entities = level.getEntities(attacker, new AABB(attacker.getOnPos()).inflate(attackRange));
 
-            attacker.level.addParticle(ParticleTypes.SWEEP_ATTACK, attacker.getX(), attacker.getY(), attacker.getZ(), 0.0D, 0.0D, 0.0D);
-            this.hurtEnemy(useItem, target, attacker);
-        } ;
+            float yRot = attacker.getYRot() % 360;
+            Vec3 playerPos = attacker.getPosition(1);
+
+            entities.forEach(entity -> {
+                // todo:计算正确的角度逻辑
+
+
+//                if (!entity.is(attacker) && entity instanceof LivingEntity) {
+//                    double rot = Math.abs(yRot + Math.toDegrees((entity.getX() - playerPos.x) / entity.getPosition(1).distanceTo(playerPos)));
+//                    if (rot <= 225 && rot >= 135) {
+//                        attacker.attack(entity);
+//                    }
+//
+//                    double d0 = (double) (-Mth.sin(attacker.getYRot() * ((float) Math.PI / 180F)));
+//                    double d1 = (double) Mth.cos(attacker.getYRot() * ((float) Math.PI / 180F));
+//
+//                    ((ServerLevel) level).sendParticles(ParticleTypes.SWEEP_ATTACK, attacker.getX() + d0, attacker.getY(0.5D), attacker.getZ() + d1, 0, d0, 0.0D, d1, 0.0D);
+//                }
+            });
+        } else {
+            level.addParticle(ParticleTypes.SWEEP_ATTACK, attacker.getX(), attacker.getEyeY(), attacker.getZ(), 0, 0, 0);
+        }
     }
 }

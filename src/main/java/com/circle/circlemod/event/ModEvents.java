@@ -4,10 +4,13 @@ import com.circle.circlemod.CircleMod;
 import com.circle.circlemod.item.ModItems;
 import com.circle.circlemod.item.staff.MagicStaff;
 import com.circle.circlemod.item.sword.directionsword.DirectionSword;
+import com.circle.circlemod.utils.MinecraftUtils;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -28,11 +31,15 @@ public class ModEvents {
     }
 
     // 左键点击空气  不用SubscribeEvent，用FMLCommonSetupEvent
+    @SubscribeEvent
     public static void playerInteractiveLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event) {
-//        ItemStack itemStack = event.getItemStack();
-//        Item useItem = itemStack.getItem();
-//        if (itemStack.is(ModItems.DIRECTION_SWORD.get())) {
-//            ((DirectionSword) useItem).useDirectionHurt(itemStack, event.getPlayer(), event.getEntityLiving());
-//        }
+        Player player = event.getPlayer();
+        Player serverPlayer = MinecraftUtils.getServerSideWorld().getPlayerByUUID(player.getUUID());
+
+        ItemStack itemStack = event.getItemStack();
+        Item useItem = itemStack.getItem();
+        if (itemStack.is(ModItems.DIRECTION_SWORD.get())) {
+            ((DirectionSword) useItem).useDirectionHurt(serverPlayer.level, itemStack, player);
+        }
     }
 }

@@ -41,10 +41,7 @@ public class CircleMod {
         ItemBlockRenderTypes.setRenderLayer(CircleBlocks.CHARM_BLOCK.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(CircleBlocks.DOOM_MUSHROOM.get(), RenderType.cutout());
         // 注册网络
-        event.enqueueWork(()->{
-            CircleModNetworking.registerMessage();
-            MinecraftForge.EVENT_BUS.addListener(ModEvents::playerInteractiveLeftClickEmpty);
-        });
+        event.enqueueWork(CircleModNetworking::registerMessage);
 
     }
 }
