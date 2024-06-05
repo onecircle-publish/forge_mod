@@ -27,13 +27,12 @@ public class ModEvents {
         }
     }
 
-    // 左键点击空气
-    @SubscribeEvent
-    public static void playerInteractive(PlayerInteractEvent.LeftClickEmpty event) {
-        ItemStack itemStack = event.getItemStack();
-        Item useItem = itemStack.getItem();
-        if (itemStack.is(ModItems.DIRECTION_SWORD.get())) {
-            ((DirectionSword) useItem).useDirectionHurt(itemStack, event.getPlayer(), event.getEntityLiving());
-        }
+    // 左键点击空气  不用SubscribeEvent，用FMLCommonSetupEvent
+    public static void playerInteractiveLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event) {
+//        ItemStack itemStack = event.getItemStack();
+//        Item useItem = itemStack.getItem();
+//        if (itemStack.is(ModItems.DIRECTION_SWORD.get())) {
+//            ((DirectionSword) useItem).useDirectionHurt(itemStack, event.getPlayer(), event.getEntityLiving());
+//        }
     }
 }

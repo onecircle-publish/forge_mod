@@ -4,6 +4,7 @@ import com.circle.circlemod.block.CircleBlocks;
 import com.circle.circlemod.block.ModBlocks;
 import com.circle.circlemod.effect.ModEffects;
 import com.circle.circlemod.entity.ModEntities;
+import com.circle.circlemod.event.ModEvents;
 import com.circle.circlemod.item.ModItems;
 import com.circle.circlemod.network.packs.CircleModNetworking;
 import com.circle.circlemod.paticle.ModParticles;
@@ -40,6 +41,10 @@ public class CircleMod {
         ItemBlockRenderTypes.setRenderLayer(CircleBlocks.CHARM_BLOCK.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(CircleBlocks.DOOM_MUSHROOM.get(), RenderType.cutout());
         // 注册网络
-        event.enqueueWork(CircleModNetworking::registerMessage);
+        event.enqueueWork(()->{
+            CircleModNetworking.registerMessage();
+            MinecraftForge.EVENT_BUS.addListener(ModEvents::playerInteractiveLeftClickEmpty);
+        });
+
     }
 }
