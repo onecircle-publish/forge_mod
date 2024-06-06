@@ -4,13 +4,12 @@ import com.circle.circlemod.CircleMod;
 import com.circle.circlemod.item.ModItems;
 import com.circle.circlemod.item.staff.MagicStaff;
 import com.circle.circlemod.item.sword.directionsword.DirectionSword;
-import com.circle.circlemod.utils.MinecraftUtils;
+import com.circle.circlemod.utils.CircleUtils;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -34,7 +33,7 @@ public class ModEvents {
     @SubscribeEvent
     public static void playerInteractiveLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event) {
         Player player = event.getPlayer();
-        Player serverPlayer = MinecraftUtils.getServerSideWorld().getPlayerByUUID(player.getUUID());
+        Player serverPlayer = CircleUtils.getServerSideWorld().getPlayerByUUID(player.getUUID());
 
         ItemStack itemStack = event.getItemStack();
         Item useItem = itemStack.getItem();
