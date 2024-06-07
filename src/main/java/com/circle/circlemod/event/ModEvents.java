@@ -37,7 +37,7 @@ public class ModEvents {
 
         ItemStack itemStack = event.getItemStack();
         Item useItem = itemStack.getItem();
-        if (itemStack.is(ModItems.DIRECTION_SWORD.get())) {
+        if (itemStack.is(ModItems.DIRECTION_RIGHT_SWORD.get()) || itemStack.is(ModItems.DIRECTION_LEFT_SWORD.get()) || itemStack.is(ModItems.DIRECTION_REAR_SWORD.get())) {
             ((DirectionSword) useItem).useDirectionHurt(serverPlayer.level, itemStack, player);
         }
     }

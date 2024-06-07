@@ -20,7 +20,9 @@ public class ModItems {
     public static RegistryObject<Item> KELP_SOAP = ITEMS.register("kelp_soap", () -> new KelpSoap(new Item.Properties().stacksTo(1).tab(ModCreativeModeTab.TEST_TAB)));
     public static RegistryObject<Item> MAGIC_STAFF = ITEMS.register("magic_staff", () -> new MagicStaff(new Item.Properties().stacksTo(1).tab(ModCreativeModeTab.TEST_TAB)));
     // 不同方向攻击的剑
-    public static RegistryObject<Item> DIRECTION_SWORD = ITEMS.register("direction_sword", () -> new DirectionSword(Tiers.IRON, 3, -2.4F, new Item.Properties().tab(ModCreativeModeTab.TEST_TAB)));
+    public static RegistryObject<Item> DIRECTION_REAR_SWORD = ITEMS.register("direction_rear_sword", () -> new DirectionSword(DirectionSword.Direction.REAR, Tiers.IRON, 3, -2.4F, new Item.Properties().tab(ModCreativeModeTab.TEST_TAB)));
+    public static RegistryObject<Item> DIRECTION_LEFT_SWORD = ITEMS.register("direction_left_sword", () -> new DirectionSword(DirectionSword.Direction.LEFT, Tiers.IRON, 3, -2.4F, new Item.Properties().tab(ModCreativeModeTab.TEST_TAB)));
+    public static RegistryObject<Item> DIRECTION_RIGHT_SWORD = ITEMS.register("direction_right_sword", () -> new DirectionSword(DirectionSword.Direction.RIGHT, Tiers.IRON, 3, -2.4F, new Item.Properties().tab(ModCreativeModeTab.TEST_TAB)));
 
     public static RegistryObject<Item> registerItem(String name, final Supplier sup) {
         return ITEMS.register(name, sup);
