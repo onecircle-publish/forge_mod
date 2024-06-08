@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "circlemod:item/direction_sword"
+    "layer0": "circlemod:item/direction_left_sword"
   }
 }

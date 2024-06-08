@@ -1,13 +1,10 @@
 package com.circle.circlemod.event;
 
 import com.circle.circlemod.CircleMod;
-import com.circle.circlemod.item.ModItems;
 import com.circle.circlemod.item.staff.MagicStaff;
 import com.circle.circlemod.item.sword.directionsword.DirectionSword;
-import com.circle.circlemod.utils.CircleUtils;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -29,16 +26,23 @@ public class ModEvents {
         }
     }
 
-    // 左键点击空气  不用SubscribeEvent，用FMLCommonSetupEvent
+    // 左键点击空气
     @SubscribeEvent
     public static void playerInteractiveLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event) {
-        Player player = event.getPlayer();
-        Player serverPlayer = CircleUtils.getServerSideWorld().getPlayerByUUID(player.getUUID());
+        ItemStack itemStack = event.getItemStack();
 
+        Item useItem = itemStack.getItem();
+        if (useItem instanceof DirectionSword) {
+            DirectionSword.callDirectionLeftClick(event);
+        }
+    }
+
+    @SubscribeEvent
+    public static void playerInteractiveLeftClickEmpty(PlayerInteractEvent.LeftClickBlock event) {
         ItemStack itemStack = event.getItemStack();
         Item useItem = itemStack.getItem();
-        if (itemStack.is(ModItems.DIRECTION_RIGHT_SWORD.get()) || itemStack.is(ModItems.DIRECTION_LEFT_SWORD.get()) || itemStack.is(ModItems.DIRECTION_REAR_SWORD.get())) {
-            ((DirectionSword) useItem).useDirectionHurt(serverPlayer.level, itemStack, player);
+        if (useItem instanceof DirectionSword) {
+            DirectionSword.callDirectionLeftClick(event);
         }
     }
 }
