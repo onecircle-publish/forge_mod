@@ -1,6 +1,25 @@
 {
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "circlemod:item/direction_rear_sword"
-  }
+	"credit": "Made with Blockbench",
+	"parent": "item/generated",
+	"textures": {
+		"layer0": "circlemod:item/direction_rear_sword"
+	},
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [118, -85, -180],
+			"translation": [0.5, -9.75, 4.5]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [44, -95, -5],
+			"translation": [0, -8.25, 1]
+		},
+		"firstperson_righthand": {
+			"rotation": [13, 109, -4],
+			"translation": [2.75, 3.25, 0]
+		},
+		"firstperson_lefthand": {
+			"rotation": [0, -86, 0],
+			"translation": [2.75, 2.75, 0]
+		}
+	}
 }
