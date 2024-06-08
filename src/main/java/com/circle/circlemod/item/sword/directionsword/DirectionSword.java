@@ -24,6 +24,7 @@ import java.util.List;
  * @date : 2024-06-03 17:02
  **/
 public class DirectionSword extends SwordItem {
+    public static final String PLAYER_INTERACT_EVENT_TAG = "direction_sword_tag";//非实体攻击时，为player对象添加该tag，完成攻击时删除tag
     private Direction direction = null;
 
     protected DirectionSword(Tier pTier, int pAttackDamageModifier, float pAttackSpeedModifier, Properties pProperties) {
@@ -72,7 +73,7 @@ public class DirectionSword extends SwordItem {
     public static void callDirectionLeftClick(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         Player serverPlayer = CircleUtils.getServerSideWorld().getPlayerByUUID(player.getUUID());
-
+        serverPlayer.addTag(PLAYER_INTERACT_EVENT_TAG);
         InteractionHand usedItemHand = player.getUsedItemHand();
         Item itemInHand = player.getItemInHand(usedItemHand).getItem();
         if (itemInHand instanceof DirectionSword) {
@@ -80,6 +81,7 @@ public class DirectionSword extends SwordItem {
                 ((DirectionSword) itemInHand).useDirectionHurt(serverPlayer.level, player.getItemInHand(player.getUsedItemHand()), serverPlayer);
             }
         }
+        serverPlayer.removeTag(PLAYER_INTERACT_EVENT_TAG);
     }
 
     public boolean isInAttackRange(boolean isLeft, double angle) {
