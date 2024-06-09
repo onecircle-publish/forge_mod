@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " $ ",
+    "# $"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:stick"
+    },
+    "$": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "circlemod:direction_right_sword"
+  }
+}

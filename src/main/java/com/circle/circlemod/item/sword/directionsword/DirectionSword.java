@@ -85,6 +85,8 @@ public class DirectionSword extends SwordItem {
     }
 
     public boolean isInAttackRange(boolean isLeft, double angle) {
+        if (this.direction == Direction.ALL) return true;
+
         if (this.direction == Direction.REAR) {
             return angle <= 180 && angle >= 135;
         } else if (this.direction == Direction.LEFT && isLeft) {
@@ -98,6 +100,7 @@ public class DirectionSword extends SwordItem {
     public enum Direction {
         LEFT,
         RIGHT,
-        REAR
+        REAR,
+        ALL
     }
 }

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "L S",
+    " # ",
+    "E R"
+  ],
+  "key": {
+    "L": {
+      "item": "circlemod:direction_left_sword"
+    },
+    "R": {
+      "item": "circlemod:direction_right_sword"
+    },
+    "E": {
+      "item": "circlemod:direction_rear_sword"
+    },
+    "S": {
+      "item": "minecraft:iron_sword"
+    },
+    "#": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "item": "circlemod:direction_sword"
+  }
+}

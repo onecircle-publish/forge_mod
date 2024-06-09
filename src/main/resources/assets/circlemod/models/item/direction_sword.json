@@ -1,0 +1,23 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "item/generated",
+	"textures": {
+		"layer0": "circlemod:item/direction_sword"
+	},
+	"display": {
+		"thirdperson_righthand": {
+			"translation": [0, -2.25, 0]
+		},
+		"firstperson_righthand": {
+			"rotation": [-26, -34, 0],
+			"translation": [0, 4.25, 0]
+		},
+		"firstperson_lefthand": {
+			"rotation": [-30, -28, 0],
+			"translation": [0.25, 5, 0]
+		},
+		"head": {
+			"translation": [0, 13, 0]
+		}
+	}
+}
