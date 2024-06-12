@@ -1,6 +1,7 @@
 package com.circle.circlemod.paticle;
 
 import com.circle.circlemod.CircleMod;
+import com.circle.circlemod.paticle.breathmask.BreathMaskParticle;
 import com.circle.circlemod.paticle.charm.CharmParticle;
 import com.circle.circlemod.paticle.freeze.FreezeParticle;
 import net.minecraft.client.Minecraft;
@@ -23,6 +24,7 @@ public class ModParticles {
         Minecraft.getInstance().particleEngine.register(ModParticles.FREEZE_PARTICLE.get(), FreezeParticle.Provider::new);
         Minecraft.getInstance().particleEngine.register(ModParticles.CHARM_PARTICLE.get(), CharmParticle.Provider::new);
         Minecraft.getInstance().particleEngine.register(ModParticles.DOOM_PARTICLE.get(), CharmParticle.Provider::new);
+        Minecraft.getInstance().particleEngine.register(ModParticles.BREATH_MASK_PARTICLE.get(), BreathMaskParticle.Provider::new);
     }
 
     /**
@@ -37,6 +39,10 @@ public class ModParticles {
      * 毁灭菇粒子
      */
     public static final RegistryObject<SimpleParticleType> DOOM_PARTICLE = PARTICLE_TYPES.register("doom_particle", () -> new SimpleParticleType(true));
+    /**
+     * 念气罩粒子
+     */
+    public static final RegistryObject<SimpleParticleType> BREATH_MASK_PARTICLE = PARTICLE_TYPES.register("breath_mask_particle", () -> new SimpleParticleType(true));
 
     public static void register(IEventBus eventBus) {
         PARTICLE_TYPES.register(eventBus);
