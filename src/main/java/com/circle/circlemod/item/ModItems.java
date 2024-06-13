@@ -1,7 +1,6 @@
 package com.circle.circlemod.item;
 
 import com.circle.circlemod.CircleMod;
-import com.circle.circlemod.item.breathmask.BreathMask;
 import com.circle.circlemod.item.kelp_soap.KelpSoap;
 import com.circle.circlemod.item.staff.MagicStaff;
 import com.circle.circlemod.item.sword.directionsword.DirectionSword;
@@ -25,8 +24,6 @@ public class ModItems {
     public static RegistryObject<Item> DIRECTION_LEFT_SWORD = ITEMS.register("direction_left_sword", () -> new DirectionSword(DirectionSword.Direction.LEFT, Tiers.IRON, 3, -2.4F, new Item.Properties().tab(ModCreativeModeTab.TEST_TAB)));
     public static RegistryObject<Item> DIRECTION_RIGHT_SWORD = ITEMS.register("direction_right_sword", () -> new DirectionSword(DirectionSword.Direction.RIGHT, Tiers.IRON, 3, -2.4F, new Item.Properties().tab(ModCreativeModeTab.TEST_TAB)));
     public static RegistryObject<Item> DIRECTION_SWORD = ITEMS.register("direction_sword", () -> new DirectionSword(DirectionSword.Direction.ALL, Tiers.IRON, 3, -2.4F, new Item.Properties().tab(ModCreativeModeTab.TEST_TAB)));
-    // 念气罩
-    public static RegistryObject<Item> BREATH_MASK = ITEMS.register("breath_mask", () -> new BreathMask(new Item.Properties().tab(ModCreativeModeTab.TEST_TAB)));
 
     public static RegistryObject<Item> registerItem(String name, final Supplier sup) {
         return ITEMS.register(name, sup);

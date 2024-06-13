@@ -1,8 +1,6 @@
 package com.circle.circlemod.event;
 
 import com.circle.circlemod.CircleMod;
-import com.circle.circlemod.capability.entity.PlayerBreathMaskStatus;
-import com.circle.circlemod.capability.entity.PlayerBreathMaskStatusProvider;
 import com.circle.circlemod.item.staff.MagicStaff;
 import com.circle.circlemod.item.sword.directionsword.DirectionSword;
 import net.minecraft.world.InteractionHand;
@@ -10,8 +8,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -77,17 +73,17 @@ public class ModEvents {
         }
     }
 
-    @SubscribeEvent
-    public static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
-        event.register(PlayerBreathMaskStatus.class);
-    }
+//    @SubscribeEvent
+//    public static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
+//        event.register(PlayerBreathMaskStatus.class);
+//    }
 
-    @SubscribeEvent
-    public static void onPlayerTicking(TickEvent.PlayerTickEvent event) {
-        event.player.getCapability(PlayerBreathMaskStatusProvider.PLAYER_BREATH_MASK_STATUS).ifPresent(playerBreathMaskStatus -> {
-            playerBreathMaskStatus.playerTick(event.player);
-        });
-    }
+//    @SubscribeEvent
+//    public static void onPlayerTicking(TickEvent.PlayerTickEvent event) {
+//        event.player.getCapability(PlayerBreathMaskStatusProvider.PLAYER_BREATH_MASK_STATUS).ifPresent(playerBreathMaskStatus -> {
+//            playerBreathMaskStatus.playerTick(event.player);
+//        });
+//    }
 
 //    // 注册能力
 //    @SubscribeEvent
