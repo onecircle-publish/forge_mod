@@ -1,6 +1,8 @@
 package com.circle.circlemod.event;
 
 import com.circle.circlemod.CircleMod;
+import com.circle.circlemod.capability.entity.PlayerBreathMaskStatus;
+import com.circle.circlemod.capability.entity.PlayerBreathMaskStatusProvider;
 import com.circle.circlemod.entity.ModEntities;
 import com.circle.circlemod.entity.charm.CharmMushroomEntity;
 import com.circle.circlemod.entity.charm.CharmMushroomEntityRenderer;
@@ -8,7 +10,6 @@ import com.circle.circlemod.entity.charm.CharmMushroomModel;
 import com.circle.circlemod.entity.doom.DoomMushroomEntity;
 import com.circle.circlemod.entity.doom.DoomMushroomEntityRenderer;
 import com.circle.circlemod.entity.doom.DoomMushroomModel;
-import com.circle.circlemod.paticle.breathmask.BreathMaskParticle;
 import com.circle.circlemod.paticle.charm.CharmParticle;
 import com.circle.circlemod.paticle.doom.DoomParticle;
 import com.circle.circlemod.paticle.freeze.FreezeParticle;
@@ -27,7 +28,6 @@ public class ModEventBusEvents {
         Minecraft.getInstance().particleEngine.register(ModParticles.FREEZE_PARTICLE.get(), FreezeParticle.Provider::new);
         Minecraft.getInstance().particleEngine.register(ModParticles.CHARM_PARTICLE.get(), CharmParticle.Provider::new);
         Minecraft.getInstance().particleEngine.register(ModParticles.DOOM_PARTICLE.get(), DoomParticle.Provider::new);
-        Minecraft.getInstance().particleEngine.register(ModParticles.BREATH_MASK_PARTICLE.get(), BreathMaskParticle.Provider::new);
     }
 
     //注册模型渲染器
