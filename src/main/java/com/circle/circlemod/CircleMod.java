@@ -5,12 +5,15 @@ import com.circle.circlemod.block.ModBlocks;
 import com.circle.circlemod.effect.ModEffects;
 import com.circle.circlemod.entity.ModEntities;
 import com.circle.circlemod.event.ModEvents;
+import com.circle.circlemod.item.ModItemProperties;
 import com.circle.circlemod.item.ModItems;
 import com.circle.circlemod.network.packs.CircleModNetworking;
 import com.circle.circlemod.paticle.ModParticles;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -43,5 +46,7 @@ public class CircleMod {
         // 注册网络
         event.enqueueWork(CircleModNetworking::registerMessage);
 
+        //注册物品的 properties，用于overide。例如弓的pull和pulling属性
+        ModItemProperties.addCustomItemProperties();
     }
 }
