@@ -10,6 +10,28 @@ import net.minecraft.world.entity.Entity;
 
 public class SwordBowSweepParticleType extends ParticleType<SwordBowSweepParticleType> implements ParticleOptions {
     private Entity onwer;
+    private boolean isLeftDirection = false;//粒子从左边发射
+    private int useTicks = 0;
+    private int startYRot = 20; // 贴图适配的默认角度
+    private int encPower = 0;//力量附魔
+
+    public SwordBowSweepParticleType(boolean pOverrideLimiter) {
+        super(pOverrideLimiter, DESERIALIZER);
+    }
+
+    public SwordBowSweepParticleType(boolean pOverrideLimiter, Entity onwer, boolean isLeftDirection, int useTicks, int startYRot, int encPower) {
+        this(pOverrideLimiter);
+        this.onwer = onwer;
+        this.isLeftDirection = isLeftDirection;
+        this.useTicks = useTicks;
+        this.startYRot = startYRot;
+        this.encPower = encPower;
+    }
+
+    @Override
+    public boolean getOverrideLimiter() {
+        return super.getOverrideLimiter();
+    }
 
     public void setOwner(Entity entity) {
         this.onwer = entity;
@@ -17,6 +39,38 @@ public class SwordBowSweepParticleType extends ParticleType<SwordBowSweepParticl
 
     public Entity getOnwer() {
         return onwer;
+    }
+
+    public void setUseTicks(int useTicks) {
+        this.useTicks = useTicks;
+    }
+
+    public int getUseTicks() {
+        return useTicks;
+    }
+
+    public void setLeftDirection(boolean leftDirection) {
+        isLeftDirection = leftDirection;
+    }
+
+    public boolean isLeftDirection() {
+        return isLeftDirection;
+    }
+
+    public void setStartYRot(int startYRot) {
+        this.startYRot = startYRot;
+    }
+
+    public int getStartYRot() {
+        return startYRot;
+    }
+
+    public void setEncPower(int encPower) {
+        this.encPower = encPower;
+    }
+
+    public int getEncPower() {
+        return encPower;
     }
 
     private static final ParticleOptions.Deserializer<SwordBowSweepParticleType> DESERIALIZER = new ParticleOptions.Deserializer<SwordBowSweepParticleType>() {
@@ -29,10 +83,6 @@ public class SwordBowSweepParticleType extends ParticleType<SwordBowSweepParticl
         }
     };
     private final Codec<SwordBowSweepParticleType> codec = Codec.unit(this::getType);
-
-    public SwordBowSweepParticleType(boolean pOverrideLimiter) {
-        super(pOverrideLimiter, DESERIALIZER);
-    }
 
     public SwordBowSweepParticleType getType() {
         return this;

@@ -1,5 +1,6 @@
 package com.circle.circlemod.paticle.sword_bow;
 
+import com.circle.circlemod.utils.CircleUtils;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
@@ -10,39 +11,62 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.List;
+
 public class SwordBowSweep extends TextureSheetParticle {
     private final SpriteSet sprites;
     private Entity onwer;
-    private double startXD;
+    private double startXD;// 速度分量
     private double startYD;
     private double startZD;
-    private final double defaultYRot = 20;
-    private double yRot;
+    private double yRot; // 相对于计算后的初始角度位置的偏航角
+    private double defaultYRot;
     private double startOwnerYRot;
     private double startOwnerXRot;
-    private int maxTicks;
-    private int startFadeTime;
+    private final int maxTicks = this.maxUseTicks + 40; // 最大飞行时间
+    private int directionValue = 1;//左边发射为-1，右边1
+    private int useTicks = 0; // 拉弓持续ticks
+    private final int maxUseTicks = 100; // 拉弓效果增加的最大ticks
+    private int updateTicks = 10; // 触发改变的tick数量
+    private int encPower = 0;
 
-    public SwordBowSweep(ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed, SpriteSet spriteSet, Entity onwer) {
+    public SwordBowSweep(ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed, SpriteSet spriteSet, SwordBowSweepParticleType particleType) {
         this(pLevel, pX, pY, pZ, spriteSet, pXSpeed, pYSpeed, pZSpeed);
-        this.onwer = onwer;
+
+        this.useTicks = particleType.getUseTicks();
+        this.defaultYRot = particleType.getStartYRot();
+        this.onwer = particleType.getOnwer();
+        this.encPower = particleType.getEncPower();
+
+        boolean isLeftDirection = particleType.isLeftDirection();
+        //是否粒子从左侧发射
+        if (isLeftDirection) {
+            directionValue = -1;
+        }
+
         this.startOwnerYRot = 360 - this.onwer.getYRot() % 360;
         this.startOwnerXRot = 360 - this.onwer.getXRot() % 360;
         this.startXD = Math.sin(Math.toRadians(startOwnerYRot));
         this.startYD = Math.sin(Math.toRadians(startOwnerXRot));
         this.startZD = Math.cos(Math.toRadians(startOwnerYRot));
+
         this.yRot = defaultYRot;
+        this.updateScale();
     }
 
     public SwordBowSweep(ClientLevel pLevel, double pX, double pY, double pZ, SpriteSet spriteSet, double pXSpeed, double pYSpeed, double pZSpeed) {
         super(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed);
-        this.maxTicks = 80;
         this.friction = 0;
         this.gravity = 0;
         this.hasPhysics = false;
@@ -52,9 +76,8 @@ public class SwordBowSweep extends TextureSheetParticle {
         this.xd = 0;
         this.yd = 0;
         this.zd = 0;
-        this.setSize(5, 5);
         this.quadSize = 1;
-        this.scale(5);
+        this.alpha = 0.85F;
     }
 
     @Override
@@ -64,22 +87,20 @@ public class SwordBowSweep extends TextureSheetParticle {
         float f1 = (float) (Mth.lerp((double) pPartialTicks, this.yo, this.y) - vec3.y());
         float f2 = (float) (Mth.lerp((double) pPartialTicks, this.zo, this.z) - vec3.z());
 
-        Quaternion quaternion = new Quaternion(Vector3f.ZP, (float) (startOwnerXRot), true);
-        Quaternion quaternion2 = new Quaternion(Vector3f.YP, (float) (startOwnerYRot + yRot), true);
-        Quaternion quaternion3 = new Quaternion(Vector3f.XP, (float) 75, true);
+        Quaternion quaternion = new Quaternion(Vector3f.YP, (float) (startOwnerYRot + yRot * directionValue), true);
+        Quaternion quaternion2 = new Quaternion(Vector3f.XP, (float) (75 + startOwnerXRot), true);
         quaternion.mul(quaternion2);
-        quaternion.mul(quaternion3);
 
-//        if (this.roll == 0.0F) {
-//            quaternion = pRenderInfo.rotation();
-//        } else {
-//            quaternion = new Quaternion(pRenderInfo.rotation());
-//            float f3 = Mth.lerp(pPartialTicks, this.oRoll, this.roll);
-//            quaternion.mul(Vector3f.ZP.rotation(f3));
-//        }
-//
-//        Vector3f vector3f1 = new Vector3f(-1.0F, -1.0F, 0.0F);
-//        vector3f1.transform(quaternion);
+        //        if (this.roll == 0.0F) {
+        //            quaternion = pRenderInfo.rotation();
+        //        } else {
+        //            quaternion = new Quaternion(pRenderInfo.rotation());
+        //            float f3 = Mth.lerp(pPartialTicks, this.oRoll, this.roll);
+        //            quaternion.mul(Vector3f.ZP.rotation(f3));
+        //        }
+        //
+        //        Vector3f vector3f1 = new Vector3f(-1.0F, -1.0F, 0.0F);
+        //        vector3f1.transform(quaternion);
         Vector3f[] avector3f = new Vector3f[]{new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F)};
         float f4 = this.getQuadSize(pPartialTicks);
 
@@ -103,27 +124,54 @@ public class SwordBowSweep extends TextureSheetParticle {
 
     @Override
     public void tick() {
+        checkAttack();
         super.tick();
-        double x = (double) this.age / this.maxTicks; // 0 - 1
-        double rot = x - Math.sin(20); //旋转角度 20度 - 90度
-        double power = (float) (Math.pow(x, 2) * 5 + 1);
+
+        double percent = (double) this.age / ((double) this.maxTicks / 2); // 0 - 1
+        double power = (float) (Math.pow(getPowerModifier() * percent, 2) + 1);
         // 设置移动
         this.xd = startXD * power;
         this.yd = startYD * power;
         this.zd = startZD * power;
 
-        if (this.age <= this.maxTicks - 40) {
-            // 旋转动画
-            this.yRot = Math.toDegrees(Math.asin(rot));
+        // 旋转动画
+        this.yRot = defaultYRot - defaultYRot * percent;
 
-            // 计算下一步移动矢量
-            this.startXD = Math.sin(Math.toRadians(startOwnerYRot + yRot));
-            this.startZD = Math.cos(Math.toRadians(startOwnerYRot + yRot));
-        } else {
-            // 计算下一步移动矢量
-            this.startXD = Math.sin(Math.toRadians(startOwnerYRot + Math.toDegrees(Math.asin(rot))));
-            this.startZD = Math.cos(Math.toRadians(startOwnerYRot + Math.toDegrees(Math.asin(rot))));
+        // 计算下一步移动矢量
+        this.startXD = Math.sin(Math.toRadians(startOwnerYRot + yRot * directionValue));
+        this.startZD = Math.cos(Math.toRadians(startOwnerYRot + yRot * directionValue));
+    }
+
+    public void checkAttack() {
+        ServerLevel serverWorld = CircleUtils.getServerSideWorld();
+        List<LivingEntity> nearbyEntities = serverWorld.getNearbyEntities(LivingEntity.class, TargetingConditions.DEFAULT, null, this.getBoundingBox());
+        if (!nearbyEntities.isEmpty()) {
+            nearbyEntities.forEach(entity -> {
+                entity.hurt(DamageSource.GENERIC, 8 + 2 * getPowerModifier());
+            });
         }
+    }
+
+    /**
+     * 设置力量属性改变的效果
+     *
+     * @return
+     */
+    public float getPowerModifier() {
+        return (1 + ((float) this.encPower / Enchantments.POWER_ARROWS.getMaxLevel()) * 5);
+    }
+
+    /**
+     * 设置不同拉取时间下的大小
+     */
+    public void updateScale() {
+        int baseScale = 1;
+        if (this.useTicks >= this.maxUseTicks) {
+            baseScale = 20;
+        }
+        float scaleValue = baseScale * ((float) (((this.useTicks % maxUseTicks) / updateTicks) | 1)) * getPowerModifier();
+        this.scale(scaleValue);
+        this.setSize(2 * scaleValue, scaleValue);
     }
 
     @Override
@@ -158,7 +206,7 @@ public class SwordBowSweep extends TextureSheetParticle {
         }
 
         public Particle createParticle(SwordBowSweepParticleType particleType, ClientLevel level, double x, double y, double z, double dx, double dy, double dz) {
-            return new SwordBowSweep(level, x, y, z, dx, dy, dz, this.spriteSet, particleType.getOnwer());
+            return new SwordBowSweep(level, x, y, z, dx, dy, dz, this.spriteSet, particleType);
         }
     }
 }
