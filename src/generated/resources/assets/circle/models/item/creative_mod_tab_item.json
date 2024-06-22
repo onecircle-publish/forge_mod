@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "circle:item/creative_mod_tab_item"
+  }
+}
