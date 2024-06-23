@@ -1,0 +1,23 @@
+[236月2024 21:57:53.401] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forge_userdev_data, --assetIndex, 12, --assetsDir, E:\gradle\caches\forge_gradle\assets, --gameDir, ., --mod, circle, --all, --output, E:\minecraft_forge_dev\forge-1.20.4-49.1.0-mdk\src\generated\resources, --existing, E:\minecraft_forge_dev\forge-1.20.4-49.1.0-mdk\src\main\resources]
+[236月2024 21:57:53.402] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: JVM identified as Azul Systems, Inc. OpenJDK 64-Bit Server VM 17.0.11+9-LTS
+[236月2024 21:57:53.405] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 10.1.2 starting: java version 17.0.11 by Azul Systems, Inc.; OS Windows 11 arch amd64 version 10.0
+[236月2024 21:57:53.521] [main/INFO] [net.minecraftforge.fml.loading.ImmediateWindowHandler/]: ImmediateWindowProvider not loading because launch target is forge_userdev_data
+[236月2024 21:57:53.652] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.5 Source=jar:file:///E:/gradle/caches/modules-2/files-2.1/org.spongepowered/mixin/0.8.5/9d1c0c3a304ae6697ecd477218fa61b850bf57fc/mixin-0.8.5.jar!/ Service=ModLauncher Env=UNKNOWN
+[236月2024 21:57:54.518] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.JarInJarDependencyLocator/]: Found 1 dependencies adding them to mods collection
+[236月2024 21:57:55.404] [main/INFO] [mixin/]: Compatibility level set to JAVA_17
+[236月2024 21:57:55.406] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forge_userdev_data' with arguments [--gameDir, ., --assetsDir, E:\gradle\caches\forge_gradle\assets, --assetIndex, 12, --mod, circle, --all, --output, E:\minecraft_forge_dev\forge-1.20.4-49.1.0-mdk\src\generated\resources, --existing, E:\minecraft_forge_dev\forge-1.20.4-49.1.0-mdk\src\main\resources]
+[236月2024 21:57:55.664] [main/INFO] [mixin/]: Remapping refMap geckolib.refmap.json using E:\minecraft_forge_dev\forge-1.20.4-49.1.0-mdk\build\createSrgToMcp\output.srg
+[236月2024 21:57:55.665] [main/WARN] [mixin/]: Mixin environment was unable to detect the current side, sided mixins will not be applied
+[236月2024 21:58:00.732] [modloading-worker-0/INFO] [net.minecraftforge.common.ForgeMod/FORGEMOD]: Forge mod loading, version 49.1.0, for MC 1.20.4 with MCP 20231207.112700
+[236月2024 21:58:00.736] [modloading-worker-0/INFO] [net.minecraftforge.common.MinecraftForge/FORGE]: MinecraftForge v49.1.0 Initialized
+[236月2024 21:58:00.793] [modloading-worker-0/INFO] [net.minecraftforge.common.ForgeMod/FORGEMOD]: Opening jdk.naming.dns/com.sun.jndi.dns to java.naming
+[236月2024 21:58:00.801] [modloading-worker-0/WARN] [software.bernie.geckolib.GeckoLib/]: Minecraft.getInstance() was null, could not register reload listeners
+[236月2024 21:58:01.541] [main/INFO] [net.minecraftforge.data.loading.DatagenModLoader/]: Initializing Data Gatherer for mods [circle]
+[236月2024 21:58:01.698] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/E:/gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.4-49.1.0_mapped_official_1.20.4/forge-1.20.4-49.1.0_mapped_official_1.20.4.jar%230!/assets/.mcassetsroot' uses unexpected schema
+[236月2024 21:58:01.699] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/E:/gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.4-49.1.0_mapped_official_1.20.4/forge-1.20.4-49.1.0_mapped_official_1.20.4.jar%230!/data/.mcassetsroot' uses unexpected schema
+[236月2024 21:58:01.942] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Item Models: circle
+[236月2024 21:58:02.056] [main/INFO] [net.minecraft.data.DataGenerator/]: Item Models: circle finished after 109 ms
+[236月2024 21:58:02.056] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Languages: zh_cn
+[236月2024 21:58:02.058] [main/INFO] [net.minecraft.data.DataGenerator/]: Languages: zh_cn finished after 1 ms
+[236月2024 21:58:02.059] [main/INFO] [net.minecraft.data.DataGenerator/]: All providers took: 116 ms
+[236月2024 21:58:02.087] [main/INFO] [net.minecraft.data.HashCache/]: Caching: total files: 2, old count: 0, new count: 3, removed stale: 0, written: 2
