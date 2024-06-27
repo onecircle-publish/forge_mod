@@ -19,6 +19,7 @@ public class CircleModCreativeTabs {
             .title(Component.translatable(CircleModTabId))
             .displayItems((parameters, output) -> {
                 output.accept(CircleModItems.CREATIVE_MOD_TAB_ITEM.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
+                output.accept(CircleModItems.FIRE_CRACKER.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
             })
             .icon(() -> CircleModItems.CREATIVE_MOD_TAB_ITEM.get()
                     .getDefaultInstance())
