@@ -1,6 +1,6 @@
 package com.circle.circlemod.common;
 
-import com.circle.circlemod.common.entity.CircleModEntities;
+import com.circle.circlemod.common.entity.firecracker.FireCrackereProjectileEntity;
 import com.circle.circlemod.enums.CircleModResources;
 import com.circle.circlemod.enums.CircleModTypes;
 import net.minecraft.client.renderer.entity.EntityRenderers;
@@ -28,14 +28,22 @@ import java.util.function.Supplier;
  * 用来处理CircleModRegister中所有的内容，通过type分辨类型并进行不同的注册逻辑
  */
 public class CircleDeferredRegister {
-    /** 创造模式标签 */
+    /**
+     * 创造模式标签
+     */
     public static final String CircleModTabId = "circlemod";
 
-    /** 注册到Forge的所有物品 */
+    /**
+     * 注册到Forge的所有物品
+     */
     public static DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, CircleMod.MODID);
-    /** 注册到Forge的所有实体 */
+    /**
+     * 注册到Forge的所有实体
+     */
     public static DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, CircleMod.MODID);
-    /** 注册到Forge的创造模式栏 */
+    /**
+     * 注册到Forge的创造模式栏
+     */
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, CircleMod.MODID);
 
     /**
@@ -66,12 +74,12 @@ public class CircleDeferredRegister {
                 case FORGE_ITEM -> {
                     RegistryObject<Item> reItem = ITEMS.register(itemId, value);
                     itemObjects.put(itemId, reItem);
-                    CircleMod.LOGGER.debug("加载了物品（item)：{}", itemId);
+                    CircleMod.LOGGER.debug("注册了物品（item)：{}", itemId);
                 }
                 case FORGE_ENTITY -> {
                     RegistryObject<EntityType<?>> reEntity = ENTITIES.register(itemId, value);
                     entityObjects.put(itemId, reEntity);
-//                    CircleMod.LOGGER.debug("加载了实体（entity)：{}", objId);
+                    CircleMod.LOGGER.debug("注册了实体（entity)：{}", itemId);
                 }
             }
         });
@@ -90,7 +98,9 @@ public class CircleDeferredRegister {
     }
 
 
-    /** 注册到forge */
+    /**
+     * 注册到forge
+     */
     public static void register(IEventBus iEventBus) {
         ITEMS.register(iEventBus);
         ENTITIES.register(iEventBus);
@@ -132,7 +142,7 @@ public class CircleDeferredRegister {
     public static class ClientModEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
-            EntityRenderers.register(CircleModEntities.FIRE_CRACKER.get(), ThrownItemRenderer::new);
+            EntityRenderers.register((EntityType<FireCrackereProjectileEntity>) getEntityInstanceByResource(CircleModResources.FIRE_CRACKER_PROJECTILE).get(), ThrownItemRenderer::new);
 
         }
     }

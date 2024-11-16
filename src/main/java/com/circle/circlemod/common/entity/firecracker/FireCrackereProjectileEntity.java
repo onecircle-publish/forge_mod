@@ -47,6 +47,11 @@ public class FireCrackereProjectileEntity extends ThrowableItemProjectile {
     }
 
 
+    /**
+     * 获取默认物品
+     *
+     * @return {@link Item }
+     */
     @Override
     protected Item getDefaultItem() {
         return CircleDeferredRegister.getItemInstanceByResource(CircleModResources.FIRE_CRACKER).get();

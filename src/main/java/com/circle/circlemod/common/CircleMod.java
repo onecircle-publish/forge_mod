@@ -1,6 +1,5 @@
 package com.circle.circlemod.common;
 
-import com.circle.circlemod.common.entity.CircleModEntities;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -30,7 +29,6 @@ public class CircleMod {
         modEventBus.addListener(this::commonSetup);
 
         CircleModRegister.register(modEventBus);
-        CircleModEntities.register(modEventBus);
     }
 
     /**
