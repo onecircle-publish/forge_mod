@@ -12,6 +12,12 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * 数据生成器
+ *
+ * @author yuanxin
+ * @date 2024/11/17
+ */
 @Mod.EventBusSubscriber(modid = CircleMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DataGenerators {
     @SubscribeEvent

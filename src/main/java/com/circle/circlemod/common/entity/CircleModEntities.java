@@ -9,10 +9,13 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+
 /**
- * @author : yuanxin
- * @date : 2024-06-28 10:44
- **/
+ * Circle Mod 实体
+ *
+ * @author yuanxin
+ * @date 2024/11/17
+ */
 public class CircleModEntities {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =
             DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, CircleMod.MODID);
