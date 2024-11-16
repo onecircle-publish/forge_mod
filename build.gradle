@@ -214,21 +214,26 @@ publishing {
     }
 }
 
+tasks.build {
+    afterEvaluate {
+        print("正在生成文档...")
+        dependsOn("javadoc")
+        print("生成完成 ./build/docs")
+    }
+}
+
 tasks.javadoc {
     options {
         encoding("UTF-8")
         locale("zh_CN")
         setFailOnError(false)
         quiet()
-
     }
 }
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
-
-
 
 eclipse {
     // Run everytime eclipse builds the code
