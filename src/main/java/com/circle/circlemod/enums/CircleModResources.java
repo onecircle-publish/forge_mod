@@ -19,7 +19,12 @@ public enum CircleModResources {
     /**
      * 鞭炮弹
      */
-    FIRE_CRACKER_PROJECTILE("fire_cracker_projectile", CircleModTypes.FORGE_ENTITY);
+    FIRE_CRACKER_PROJECTILE("fire_cracker_projectile", CircleModTypes.FORGE_ENTITY),
+
+    /**
+     * 安全床
+     */
+    SAFE_BED("safe_bed", CircleModTypes.FORGE_ITEM);
 
     public CircleModResource resource = null;
 
