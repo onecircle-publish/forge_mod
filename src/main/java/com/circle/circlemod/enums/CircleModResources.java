@@ -24,7 +24,12 @@ public enum CircleModResources {
     /**
      * 安全床
      */
-    SAFE_BED("safe_bed", CircleModTypes.FORGE_ITEM);
+    SAFE_BED("safe_bed", CircleModTypes.FORGE_BLOCK),
+
+    /**
+     * 安全床
+     */
+    SAFE_BED_ENTITY("safe_bed_entity", CircleModTypes.FORGE_BLOCK_ENTITY);
 
     public CircleModResource resource = null;
 
@@ -37,6 +42,7 @@ public enum CircleModResources {
     private CircleModResources(String id, CircleModTypes type) {
         this.resource = new CircleModResource(id, type);
     }
+
 
     /**
      * 资源

@@ -10,7 +10,7 @@ import java.util.function.Supplier;
  * @author yuanxin
  * @date 2024/11/17
  */
-public class BuildObject {
+public class BuildObject<T> {
     public CircleModResources resource;
     public Supplier<?> supplier;
 
@@ -61,7 +61,7 @@ public class BuildObject {
      *
      * @param supplier 供应商
      */
-    public void setSupplier(Supplier<?> supplier) {
+    public void setSupplier(Supplier<Object> supplier) {
         this.supplier = supplier;
     }
 }

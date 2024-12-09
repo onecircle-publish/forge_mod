@@ -8,5 +8,7 @@ package com.circle.circlemod.enums;
  */
 public enum CircleModTypes {
     FORGE_ITEM,
-    FORGE_ENTITY
+    FORGE_BLOCK,
+    FORGE_ENTITY,
+    FORGE_BLOCK_ENTITY
 }

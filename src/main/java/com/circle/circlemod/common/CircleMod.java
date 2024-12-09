@@ -6,6 +6,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
+import software.bernie.geckolib.GeckoLib;
 
 
 /**
@@ -27,7 +28,9 @@ public class CircleMod {
         IEventBus modEventBus = FMLJavaModLoadingContext.get()
                 .getModEventBus();
         modEventBus.addListener(this::commonSetup);
+        GeckoLib.initialize();
         CircleModRegister.register(modEventBus);
+
     }
 
     /**
